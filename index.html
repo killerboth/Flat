@@ -1,376 +1,512 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Flat</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
-.app{background:#111;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:150px;}
-.header{background:#000;padding:20px 16px 14px;text-align:center;border-bottom:0.5px solid #1e1e1e;}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
-.logo{font-size:26px;font-weight:600;letter-spacing:5px;color:#fff;}
-.order-badge{background:#1a1a1a;color:#aaa;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid #2a2a2a;}
-.header-sub{font-size:11px;color:#444;letter-spacing:0.5px;}
-.tabs{display:flex;background:#000;border-bottom:0.5px solid #1e1e1e;position:sticky;top:0;z-index:10;}
-.tab{flex:1;padding:13px 8px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:#555;border-bottom:2px solid transparent;transition:all 0.2s;}
-.tab.active{color:#fff;border-bottom:2px solid #fff;}
-.search-bar{padding:12px;background:#000;border-bottom:0.5px solid #1a1a1a;}
-.search-bar input{width:100%;padding:10px 16px;border-radius:22px;border:0.5px solid #2a2a2a;background:#141414;font-size:14px;color:#fff;outline:none;transition:border-color 0.2s;}
-.search-bar input:focus{border-color:#444;}
-.search-bar input::placeholder{color:#444;}
-.section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:#333;padding:18px 16px 7px;}
-.item-card{background:#161616;margin:0 12px 7px;border-radius:16px;border:0.5px solid #222;overflow:hidden;transition:border-color 0.2s,transform 0.15s;}
-.item-card.selected{border:1.5px solid #fff;}
-.item-card.entering{animation:slideIn 0.2s ease;}
-@keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-.item-row{display:flex;align-items:center;padding:14px 14px;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s;}
-.item-row:active{background:#1f1f1f;}
-.check-box{width:23px;height:23px;border-radius:7px;border:1.5px solid #2e2e2e;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.18s;}
-.check-box.on{background:#fff;border-color:#fff;}
-.check-box.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #111;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
-.item-name{font-size:14px;font-weight:500;color:#efefef;}
-.item-desc{font-size:11px;color:#444;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.item-price{font-size:13px;font-weight:500;color:#888;flex-shrink:0;}
-.item-controls{padding:0 14px 13px;display:flex;flex-direction:column;gap:9px;animation:slideIn 0.18s ease;}
-.controls-row{display:flex;align-items:center;gap:9px;}
-.qty-wrap{display:flex;align-items:center;gap:6px;background:#1e1e1e;border-radius:22px;padding:5px 11px;border:0.5px solid #2a2a2a;}
-.qty-btn{width:26px;height:26px;border-radius:50%;border:none;background:none;font-size:19px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;transition:transform 0.1s;}
-.qty-btn:active{transform:scale(0.85);}
-.qty-num{font-size:14px;font-weight:500;min-width:18px;text-align:center;color:#fff;}
-.note-input{flex:1;font-size:12px;padding:7px 12px;border-radius:22px;border:0.5px solid #2a2a2a;background:#1e1e1e;color:#fff;outline:none;transition:border-color 0.2s;}
-.note-input:focus{border-color:#444;}
-.note-input::placeholder{color:#444;}
-.option-row{display:flex;gap:7px;}
-.opt-btn{flex:1;padding:7px 6px;border-radius:10px;border:0.5px solid #2a2a2a;background:#1e1e1e;color:#888;font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all 0.15s;}
-.opt-btn.active{background:#fff;border-color:#fff;color:#111;}
-.opt-btn:active{transform:scale(0.97);}
-.vat-note{font-size:10px;color:#333;text-align:center;padding:6px 0 2px;}
-.plate-section{padding:12px;}
-.plate-card{background:#161616;border-radius:16px;border:0.5px solid #222;padding:15px;}
-.plate-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#444;margin-bottom:9px;}
-.plate-input{width:100%;font-size:22px;font-weight:500;text-align:center;padding:11px;border-radius:11px;border:1.5px solid #222;background:#1e1e1e;color:#fff;letter-spacing:3px;text-transform:uppercase;outline:none;transition:border-color 0.2s;}
-.plate-input:focus{border-color:#555;}
-.plate-input::placeholder{color:#2e2e2e;}
-.sticky-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#000;border-top:0.5px solid #1e1e1e;padding:12px 12px 16px;}
+:root{
+  --bg:#111;
+  --bg2:#161616;
+  --bg3:#1e1e1e;
+  --bg4:#141414;
+  --border:#222;
+  --border2:#2a2a2a;
+  --text:#efefef;
+  --text2:#888;
+  --text3:#444;
+  --text4:#333;
+}
+html,body{
+  height:100%;
+  background:var(--bg);
+  margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  overscroll-behavior:none;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+.app{
+  background:var(--bg);
+  min-height:100vh;
+  min-height:100dvh;
+  width:100%;
+  padding-bottom:calc(140px + env(safe-area-inset-bottom));
+}
+/* HEADER */
+.header{
+  background:#000;
+  padding:16px 16px 12px;
+  padding-top:calc(16px + env(safe-area-inset-top));
+  text-align:center;
+  border-bottom:0.5px solid #1e1e1e;
+}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
+.logo{font-size:24px;font-weight:700;letter-spacing:5px;color:#fff;}
+.order-badge{background:#1a1a1a;color:#888;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid #2a2a2a;white-space:nowrap;}
+.header-sub{font-size:11px;color:#3a3a3a;letter-spacing:0.5px;}
+/* TABS */
+.tabs{
+  display:flex;
+  background:#000;
+  border-bottom:0.5px solid #1e1e1e;
+  position:sticky;top:0;z-index:50;
+}
+.tab{
+  flex:1;padding:13px 8px;font-size:13px;font-weight:500;
+  text-align:center;cursor:pointer;color:#555;
+  border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;
+  user-select:none;
+}
+.tab.active{color:#fff;border-bottom-color:#fff;}
+/* SEARCH */
+.search-wrap{padding:10px 12px;background:#000;border-bottom:0.5px solid #1a1a1a;}
+.search-wrap input{
+  width:100%;padding:10px 16px;border-radius:22px;
+  border:0.5px solid var(--border2);background:var(--bg4);
+  font-size:16px;color:#fff;outline:none;
+  -webkit-appearance:none;appearance:none;
+  transition:border-color 0.2s;
+}
+.search-wrap input:focus{border-color:#555;}
+.search-wrap input::placeholder{color:#3a3a3a;}
+/* SUMMARY PILLS */
+.summary-wrap{padding:8px 12px 2px;display:flex;gap:6px;flex-wrap:wrap;min-height:0;}
+.pill{background:#1a1a1a;border:0.5px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:11px;color:#777;white-space:nowrap;}
+/* SECTION LABEL */
+.sec-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:#2e2e2e;padding:16px 14px 6px;}
+/* ITEM CARD */
+.card{
+  background:var(--bg2);margin:0 10px 7px;
+  border-radius:16px;border:0.5px solid var(--border);
+  overflow:hidden;transition:border-color 0.15s;
+}
+.card.on{border:1.5px solid #fff;}
+.card-row{
+  display:flex;align-items:center;
+  padding:14px 14px;gap:12px;cursor:pointer;
+  transition:background 0.1s;
+}
+.card-row:active{background:#1f1f1f;}
+.chk{
+  width:24px;height:24px;min-width:24px;border-radius:7px;
+  border:1.5px solid #2e2e2e;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s,border-color 0.15s;
+}
+.chk.on{background:#fff;border-color:#fff;}
+.chk.on::after{
+  content:'';display:block;width:5px;height:9px;
+  border:2px solid #111;border-top:none;border-left:none;
+  transform:rotate(45deg) translate(-1px,-1px);
+}
+.item-name{font-size:14px;font-weight:500;color:var(--text);}
+.item-desc{font-size:11px;color:#444;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.item-price{font-size:13px;font-weight:500;color:var(--text2);flex-shrink:0;padding-left:8px;}
+/* CONTROLS (shown when selected) */
+.controls{
+  padding:0 14px 13px;display:flex;flex-direction:column;gap:9px;
+  animation:slideDown 0.18s ease;
+}
+@keyframes slideDown{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.opt-row{display:flex;gap:7px;}
+.opt{
+  flex:1;padding:8px 6px;border-radius:10px;
+  border:0.5px solid var(--border2);background:var(--bg3);
+  color:#666;font-size:12px;font-weight:500;
+  cursor:pointer;text-align:center;
+  transition:background 0.12s,color 0.12s,border-color 0.12s;
+  user-select:none;
+}
+.opt:active{transform:scale(0.97);}
+.opt.on{background:#fff;border-color:#fff;color:#111;}
+.ctrl-row{display:flex;align-items:center;gap:9px;}
+.qty-box{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg3);border-radius:22px;
+  padding:5px 11px;border:0.5px solid var(--border2);
+  flex-shrink:0;
+}
+.qty-btn{
+  width:28px;height:28px;border-radius:50%;border:none;
+  background:none;font-size:20px;cursor:pointer;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.1s;user-select:none;
+}
+.qty-btn:active{transform:scale(0.8);}
+.qty-n{font-size:14px;font-weight:500;min-width:20px;text-align:center;color:#fff;}
+.note-in{
+  flex:1;font-size:14px;padding:8px 12px;border-radius:22px;
+  border:0.5px solid var(--border2);background:var(--bg3);
+  color:#fff;outline:none;min-width:0;
+  -webkit-appearance:none;appearance:none;
+}
+.note-in::placeholder{color:#3a3a3a;}
+.note-in:focus{border-color:#555;}
+/* VAT NOTE */
+.vat-note{font-size:10px;color:#2a2a2a;text-align:center;padding:8px 0 0;}
+/* PLATE */
+.plate-wrap{padding:12px 10px;}
+.plate-card{background:var(--bg2);border-radius:16px;border:0.5px solid var(--border);padding:14px;}
+.plate-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#3a3a3a;margin-bottom:8px;}
+.plate-in{
+  width:100%;font-size:24px;font-weight:600;text-align:center;
+  padding:12px;border-radius:12px;border:1.5px solid var(--border2);
+  background:var(--bg3);color:#fff;letter-spacing:3px;
+  text-transform:uppercase;outline:none;
+  -webkit-appearance:none;appearance:none;
+  transition:border-color 0.2s;
+}
+.plate-in:focus{border-color:#555;}
+.plate-in::placeholder{color:#2a2a2a;}
+/* BOTTOM BAR */
+.bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#000;
+  border-top:0.5px solid #1e1e1e;
+  padding:12px 12px;
+  padding-bottom:calc(14px + env(safe-area-inset-bottom));
+  z-index:100;
+}
 .total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
-.total-label{font-size:12px;color:#444;}
-.total-right{text-align:right;}
-.total-amt{font-size:20px;font-weight:600;color:#fff;transition:all 0.2s;}
-.total-vat{font-size:10px;color:#333;margin-top:1px;}
+.total-lbl{font-size:12px;color:#444;}
+.total-r{text-align:right;}
+.total-amt{font-size:20px;font-weight:700;color:#fff;}
+.total-vat{font-size:10px;color:#2e2e2e;margin-top:1px;}
 .btn-row{display:flex;gap:8px;}
-.btn-copy{flex:1;padding:15px;border-radius:13px;background:#fff;color:#111;border:none;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.3px;transition:transform 0.15s,background 0.15s;}
+.btn-copy{
+  flex:1;padding:16px;border-radius:14px;
+  background:#fff;color:#111;border:none;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:opacity 0.15s,transform 0.1s;
+  -webkit-appearance:none;appearance:none;
+}
 .btn-copy:active{transform:scale(0.97);}
-.btn-copy:disabled{background:#1e1e1e;color:#333;cursor:default;}
-.btn-reset{padding:15px 16px;border-radius:13px;background:#161616;color:#555;border:0.5px solid #222;font-size:13px;cursor:pointer;transition:background 0.15s;}
+.btn-copy:disabled{background:#1e1e1e;color:#2e2e2e;cursor:default;}
+.btn-reset{
+  padding:16px 18px;border-radius:14px;
+  background:var(--bg2);color:#555;
+  border:0.5px solid var(--border);
+  font-size:13px;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+}
 .btn-reset:active{background:#1f1f1f;}
-.toast{position:fixed;bottom:115px;left:50%;transform:translateX(-50%) translateY(10px);width:calc(100% - 24px);max-width:456px;background:#fff;color:#111;padding:12px 16px;border-radius:13px;text-align:center;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.22s,transform 0.22s;pointer-events:none;z-index:100;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.history-wrap{padding:12px;}
-.history-empty{text-align:center;padding:50px 20px;color:#333;font-size:14px;}
-.hist-card{background:#161616;border-radius:16px;border:0.5px solid #222;margin-bottom:10px;overflow:hidden;}
-.hist-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid #1e1e1e;}
-.hist-num{font-size:13px;font-weight:500;color:#efefef;}
-.hist-plate{font-size:12px;color:#555;font-weight:500;letter-spacing:1px;margin-left:8px;}
-.hist-time{font-size:11px;color:#333;}
-.hist-items{padding:10px 14px;}
-.hist-item-line{font-size:13px;color:#666;padding:3px 0;}
-.hist-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#111;}
-.hist-total{font-size:13px;font-weight:500;color:#efefef;}
-.btn-repeat{font-size:12px;padding:7px 16px;border-radius:20px;background:#fff;color:#111;border:none;cursor:pointer;font-weight:600;transition:transform 0.1s;}
-.btn-repeat:active{transform:scale(0.95);}
-.no-results{text-align:center;padding:40px;color:#333;font-size:14px;}
-.selected-summary{padding:4px 16px 0;display:flex;gap:6px;flex-wrap:wrap;}
-.summary-pill{background:#1a1a1a;border:0.5px solid #2a2a2a;border-radius:20px;padding:4px 10px;font-size:11px;color:#888;white-space:nowrap;}
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:calc(125px + env(safe-area-inset-bottom));
+  left:12px;right:12px;
+  background:#fff;color:#111;
+  padding:13px 16px;border-radius:14px;
+  text-align:center;font-size:13px;font-weight:600;
+  opacity:0;pointer-events:none;z-index:200;
+  transition:opacity 0.2s,transform 0.2s;
+  transform:translateY(8px);
+}
+.toast.show{opacity:1;transform:translateY(0);}
+/* HISTORY */
+.hist-wrap{padding:10px;}
+.hist-empty{text-align:center;padding:60px 20px;color:#2e2e2e;font-size:14px;}
+.hcard{background:var(--bg2);border-radius:16px;border:0.5px solid var(--border);margin-bottom:10px;overflow:hidden;}
+.hcard-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid #1e1e1e;}
+.hnum{font-size:13px;font-weight:600;color:var(--text);}
+.hplate{font-size:12px;color:#555;font-weight:500;letter-spacing:1px;margin-left:8px;}
+.htime{font-size:11px;color:#2e2e2e;}
+.hitems{padding:10px 14px;}
+.hline{font-size:13px;color:#555;padding:3px 0;}
+.hfoot{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0e0e0e;}
+.htotal{font-size:13px;font-weight:600;color:var(--text);}
+.btn-rep{font-size:12px;padding:8px 16px;border-radius:20px;background:#fff;color:#111;border:none;cursor:pointer;font-weight:700;}
+.btn-rep:active{transform:scale(0.95);}
+.no-res{text-align:center;padding:40px;color:#2e2e2e;font-size:14px;}
 </style>
-
+</head>
+<body>
 <div class="app">
+
 <div class="header">
   <div class="header-top">
-    <div style="width:64px;"></div>
+    <div style="width:70px"></div>
     <div class="logo">FLAT</div>
-    <div class="order-badge" id="order-counter">Order #1</div>
+    <div class="order-badge" id="badge">Order #1</div>
   </div>
   <div class="header-sub">Drive-thru order system</div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" id="tab-menu" onclick="switchTab('menu')">Menu</div>
-  <div class="tab" id="tab-history" onclick="switchTab('history')">
-    History <span id="hist-count" style="display:none;background:#fff;color:#111;border-radius:10px;font-size:10px;padding:1px 7px;margin-left:4px;font-weight:600;"></span>
+  <div class="tab active" id="t-menu" onclick="tab('menu')">Menu</div>
+  <div class="tab" id="t-hist" onclick="tab('hist')">
+    History
+    <span id="hbadge" style="display:none;background:#fff;color:#111;border-radius:10px;font-size:10px;padding:1px 7px;margin-left:4px;font-weight:700;"></span>
   </div>
 </div>
 
-<div id="panel-menu">
-  <div class="search-bar">
-    <input type="search" id="search" placeholder="Search menu..." oninput="renderMenu()" />
+<div id="p-menu">
+  <div class="search-wrap">
+    <input id="search" type="search" placeholder="Search menu..." autocomplete="off" oninput="render()"/>
   </div>
-  <div id="selected-summary" class="selected-summary"></div>
-  <div id="menu-list"></div>
+  <div id="summary" class="summary-wrap"></div>
+  <div id="menu"></div>
   <div class="vat-note">All prices include 5% VAT</div>
-  <div class="plate-section">
+  <div class="plate-wrap">
     <div class="plate-card">
       <div class="plate-lbl">License plate</div>
-      <input class="plate-input" id="plate" type="text" placeholder="A 12345" maxlength="12" oninput="this.value=this.value.toUpperCase();updateBar()" />
+      <input class="plate-in" id="plate" type="text" placeholder="A 12345" maxlength="14"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9 ]/g,'');bar()"/>
     </div>
   </div>
 </div>
 
-<div id="panel-history" style="display:none;">
-  <div class="history-wrap" id="history-list"></div>
+<div id="p-hist" style="display:none">
+  <div class="hist-wrap" id="hlist"></div>
+</div>
+
 </div>
 
 <div class="toast" id="toast"></div>
 
-<div class="sticky-bar" id="sticky-bar">
+<div class="bar" id="bar">
   <div class="total-row">
-    <span class="total-label">Order total</span>
-    <div class="total-right">
-      <div class="total-amt" id="total-display">0.000 OMR</div>
-      <div class="total-vat" id="vat-display">incl. 0.000 OMR VAT</div>
+    <span class="total-lbl">Order total</span>
+    <div class="total-r">
+      <div class="total-amt" id="tamt">0.000 OMR</div>
+      <div class="total-vat" id="tvat">incl. 0.000 OMR VAT</div>
     </div>
   </div>
   <div class="btn-row">
-    <button class="btn-copy" id="copyBtn" onclick="copyOrder()" disabled>Copy for WhatsApp</button>
-    <button class="btn-reset" onclick="resetAll()">Reset</button>
+    <button class="btn-copy" id="copybtn" disabled onclick="copy()">Copy for WhatsApp</button>
+    <button class="btn-reset" onclick="reset()">Reset</button>
   </div>
-</div>
 </div>
 
 <script>
-const VAT=0.05;
-const BURGER_IDS=["uncle_sam","pats","truff","honey","crunch","blazing","bacon","fh_single","fh_double"];
-
-const MENU=[
-  {section:"Burgers"},
-  {id:"uncle_sam",name:"Uncle Sam",desc:"Angus beef, cheese, signature sauce, sesame brioche",price:1.600,type:"burger"},
-  {id:"pats",name:"Pat's Cheeseburger",desc:"Angus beef, cheese, onions, pickles, ketchup & mustard",price:1.600,type:"burger"},
-  {id:"truff",name:"Truff",desc:"Angus beef, truffle sauce, melted cheese, sesame brioche",price:2.400,type:"burger"},
-  {id:"honey",name:"Honey",desc:"Angus beef, honey, melted cheese, sesame brioche",price:1.800,type:"burger"},
-  {id:"crunch",name:"Crunch",desc:"Al Safa fried chicken, house sauce and cheese",price:1.600,type:"burger"},
-  {id:"blazing",name:"Blazing Bird",desc:"Al Safa fried chicken, spicy sauce and cheese",price:1.800,type:"burger"},
-  {id:"bacon",name:"Bacon Cheeseburger",desc:"Angus beef, cheese, caramelized onions, beef bacon, special sauce",price:2.200,type:"burger"},
-  {id:"fh_single",name:"Full House — Single",desc:"Smashed patty, lettuce, tomato, onions, cheese, house sauce",price:2.000,type:"burger"},
-  {id:"fh_double",name:"Full House — Double",desc:"2 smashed patties, lettuce, tomato, onions, cheese, house sauce",price:2.400,type:"burger"},
-  {section:"Mac & Cheese"},
-  {id:"classic_mac",name:"Classic Mac & Cheese",desc:"Creamy macaroni and cheese",price:1.400},
-  {id:"truff_mac",name:"Truffle Mac & Cheese",desc:"Truffle-infused creamy macaroni and cheese",price:1.600},
-  {section:"Sides"},
-  {id:"norm_fries",name:"Normal Fries",desc:"Golden, crispy fries",price:0.800},
-  {id:"spicy_fries",name:"Spicy Fries",desc:"Fries with spicy seasoning",price:0.900},
-  {id:"strips",name:"Chicken Strips",desc:"3 strips or 5 strips",price:1.400,type:"strips"},
-  {id:"nuggets",name:"Chicken Nuggets",desc:"",price:1.500},
-  {id:"sliders",name:"Sliders Box",desc:"Mini Uncle Sams — smashed beef, cheese, signature sauce",price:9.900},
-  {section:"Drinks"},
-  {id:"water",name:"Water",desc:"",price:0.200},
-  {id:"soda",name:"Soda",desc:"",price:0.400},
-  {section:"Extras"},
-  {id:"beef_extra",name:"Beef Patty",desc:"Extra beef patty",price:0.400},
-  {id:"jalapeno",name:"Jalapeño",desc:"",price:0.100},
-  {id:"pickle",name:"Pickle",desc:"",price:0.100},
-  {id:"cheese_slice",name:"Cheese Slice",desc:"",price:0.100},
-  {id:"blazing_sauce",name:"Blazing Bird Sauce",desc:"",price:0.200},
-  {id:"honey_sauce",name:"Honey Sauce",desc:"",price:0.300},
+var VAT=0.05;
+var MENU=[
+  {s:"Burgers"},
+  {id:"uncle_sam",n:"Uncle Sam",d:"Angus beef, cheese, signature sauce, sesame brioche",p:1.600,t:"b"},
+  {id:"pats",n:"Pat's Cheeseburger",d:"Angus beef, cheese, onions, pickles, ketchup & mustard",p:1.600,t:"b"},
+  {id:"truff",n:"Truff",d:"Angus beef, truffle sauce, melted cheese, sesame brioche",p:2.400,t:"b"},
+  {id:"honey",n:"Honey",d:"Angus beef, honey, melted cheese, sesame brioche",p:1.800,t:"b"},
+  {id:"crunch",n:"Crunch",d:"Al Safa fried chicken, house sauce and cheese",p:1.600,t:"b"},
+  {id:"blazing",n:"Blazing Bird",d:"Al Safa fried chicken, spicy sauce and cheese",p:1.800,t:"b"},
+  {id:"bacon",n:"Bacon Cheeseburger",d:"Angus beef, cheese, caramelized onions, beef bacon, special sauce",p:2.200,t:"b"},
+  {id:"fhs",n:"Full House — Single",d:"Smashed patty, lettuce, tomato, onions, cheese, house sauce",p:2.000,t:"b"},
+  {id:"fhd",n:"Full House — Double",d:"2 smashed patties, lettuce, tomato, onions, cheese, house sauce",p:2.400,t:"b"},
+  {s:"Mac & Cheese"},
+  {id:"cmac",n:"Classic Mac & Cheese",d:"Creamy macaroni and cheese",p:1.400},
+  {id:"tmac",n:"Truffle Mac & Cheese",d:"Truffle-infused creamy macaroni and cheese",p:1.600},
+  {s:"Sides"},
+  {id:"nfries",n:"Normal Fries",d:"Golden, crispy fries",p:0.800},
+  {id:"sfries",n:"Spicy Fries",d:"Fries with spicy seasoning",p:0.900},
+  {id:"strips",n:"Chicken Strips",d:"Choose 3 or 5 strips",p:1.400,t:"strips"},
+  {id:"nuggets",n:"Chicken Nuggets",d:"",p:1.500},
+  {id:"sliders",n:"Sliders Box",d:"Mini Uncle Sams — smashed beef, cheese, signature sauce",p:9.900},
+  {s:"Drinks"},
+  {id:"water",n:"Water",d:"",p:0.200},
+  {id:"soda",n:"Soda",d:"",p:0.400},
+  {s:"Extras"},
+  {id:"bpatty",n:"Beef Patty",d:"Extra beef patty",p:0.400},
+  {id:"jal",n:"Jalapeño",d:"",p:0.100},
+  {id:"pcl",n:"Pickle",d:"",p:0.100},
+  {id:"chs",n:"Cheese Slice",d:"",p:0.100},
+  {id:"bsauce",n:"Blazing Bird Sauce",d:"",p:0.200},
+  {id:"hsauce",n:"Honey Sauce",d:"",p:0.300},
 ];
 
-const items=MENU.filter(i=>!i.section);
-const state={};
-items.forEach(i=>{
-  state[i.id]={checked:false,qty:1,note:"",patty:"single",strips:3};
-});
-let orderNum=1,history=[];
+var items=MENU.filter(function(x){return !x.s;});
+var ST={};
+items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3};});
+var onum=1,hist=[];
 
-function itemBasePrice(item){
-  const s=state[item.id];
-  if(item.type==="burger") return item.price+(s.patty==="double"?0.400:0);
-  if(item.type==="strips") return s.strips===5?1.800:1.400;
-  return item.price;
+function bp(item){
+  var s=ST[item.id];
+  if(item.t==="b") return item.p+(s.patty==="double"?0.4:0);
+  if(item.t==="strips") return s.strips===5?1.8:1.4;
+  return item.p;
+}
+function vp(item){return bp(item)*1.05;}
+function total(){
+  return items.filter(function(i){return ST[i.id].on;}).reduce(function(a,i){return a+vp(i)*ST[i.id].q;},0);
 }
 
-function withVAT(p){return p*(1+VAT);}
-
-function getTotal(){
-  return items.filter(i=>state[i.id].checked).reduce((s,i)=>s+withVAT(itemBasePrice(i))*state[i.id].qty,0);
-}
-
-function updateBar(){
-  const total=getTotal();
-  const vat=total-(total/(1+VAT));
-  document.getElementById("total-display").textContent=total.toFixed(3)+" OMR";
-  document.getElementById("vat-display").textContent="incl. "+vat.toFixed(3)+" OMR VAT";
-  document.getElementById("copyBtn").disabled=items.filter(i=>state[i.id].checked).length===0;
-  renderSummary();
-}
-
-function renderSummary(){
-  const sel=items.filter(i=>state[i.id].checked);
-  const el=document.getElementById("selected-summary");
+function bar(){
+  var t=total(),v=t-t/1.05;
+  document.getElementById("tamt").textContent=t.toFixed(3)+" OMR";
+  document.getElementById("tvat").textContent="incl. "+v.toFixed(3)+" OMR VAT";
+  var sel=items.filter(function(i){return ST[i.id].on;});
+  document.getElementById("copybtn").disabled=sel.length===0;
+  var el=document.getElementById("summary");
   if(!sel.length){el.innerHTML="";return;}
-  el.innerHTML=sel.map(i=>{
-    const s=state[i.id];
-    let label=`${s.qty}x ${i.name}`;
-    if(i.type==="burger"&&s.patty==="double") label+=" (dbl)";
-    if(i.type==="strips") label+=` (${s.strips}pc)`;
-    return `<div class="summary-pill">${label}</div>`;
+  el.innerHTML=sel.map(function(i){
+    var s=ST[i.id],l=s.q+"x "+i.n;
+    if(i.t==="b"&&s.patty==="double")l+=" (dbl)";
+    if(i.t==="strips")l+=" ("+s.strips+"pc)";
+    return '<div class="pill">'+l+'</div>';
   }).join("");
 }
 
-function renderMenu(){
-  const q=(document.getElementById("search").value||"").toLowerCase().trim();
-  let html="",lastSection="",sectionHasItems=false,sectionBuffer="";
-  MENU.forEach(item=>{
-    if(item.section){
-      if(sectionHasItems) html+=`<div class="section-label">${lastSection}</div>`+sectionBuffer;
-      lastSection=item.section;sectionBuffer="";sectionHasItems=false;return;
+function render(){
+  var q=(document.getElementById("search").value||"").toLowerCase().trim();
+  var html="",sec="",buf="",has=false;
+  MENU.forEach(function(item){
+    if(item.s){
+      if(has)html+='<div class="sec-lbl">'+sec+'</div>'+buf;
+      sec=item.s;buf="";has=false;return;
     }
-    if(q&&!item.name.toLowerCase().includes(q)&&!(item.desc||"").toLowerCase().includes(q)) return;
-    sectionHasItems=true;
-    const s=state[item.id];
-    const bp=itemBasePrice(item);
-    const vp=withVAT(bp);
-    sectionBuffer+=`<div class="item-card${s.checked?" selected":""}" id="card-${item.id}">
-      <div class="item-row" onclick="toggleItem('${item.id}')">
-        <div class="check-box${s.checked?" on":""}"></div>
-        <div style="flex:1;min-width:0;">
-          <div class="item-name">${item.name}</div>
-          ${item.desc?`<div class="item-desc">${item.desc}</div>`:""}
-        </div>
-        <div class="item-price">${vp.toFixed(3)}</div>
-      </div>
-      ${s.checked?`<div class="item-controls entering">
-        ${item.type==="burger"?`<div class="option-row">
-          <div class="opt-btn${s.patty==="single"?" active":""}" onclick="event.stopPropagation();setPatty('${item.id}','single')">Single patty</div>
-          <div class="opt-btn${s.patty==="double"?" active":""}" onclick="event.stopPropagation();setPatty('${item.id}','double')">Double patty +0.420</div>
-        </div>`:""}
-        ${item.type==="strips"?`<div class="option-row">
-          <div class="opt-btn${s.strips===3?" active":""}" onclick="event.stopPropagation();setStrips('${item.id}',3)">3 strips — 1.470</div>
-          <div class="opt-btn${s.strips===5?" active":""}" onclick="event.stopPropagation();setStrips('${item.id}',5)">5 strips — 1.890</div>
-        </div>`:""}
-        <div class="controls-row">
-          <div class="qty-wrap">
-            <button class="qty-btn" onclick="event.stopPropagation();changeQty('${item.id}',-1)">−</button>
-            <span class="qty-num">${s.qty}</span>
-            <button class="qty-btn" onclick="event.stopPropagation();changeQty('${item.id}',1)">+</button>
-          </div>
-          <input class="note-input" type="text" placeholder="Note (e.g. no onions)" value="${s.note.replace(/"/g,'&quot;')}" oninput="state['${item.id}'].note=this.value" onclick="event.stopPropagation()" />
-        </div>
-      </div>`:""}
-    </div>`;
+    if(q&&item.n.toLowerCase().indexOf(q)<0&&(item.d||"").toLowerCase().indexOf(q)<0)return;
+    has=true;
+    var s=ST[item.id],price=vp(item).toFixed(3);
+    buf+='<div class="card'+(s.on?" on":"")+'" id="c-'+item.id+'">';
+    buf+='<div class="card-row" onclick="tog(\''+item.id+'\')">';
+    buf+='<div class="chk'+(s.on?" on":"")+'"></div>';
+    buf+='<div style="flex:1;min-width:0"><div class="item-name">'+item.n+'</div>';
+    if(item.d)buf+='<div class="item-desc">'+item.d+'</div>';
+    buf+='</div><div class="item-price">'+price+'</div></div>';
+    if(s.on){
+      buf+='<div class="controls">';
+      if(item.t==="b"){
+        buf+='<div class="opt-row">';
+        buf+='<div class="opt'+(s.patty==="single"?" on":"")+'" onclick="event.stopPropagation();sp(\''+item.id+'\',\'single\')">Single patty</div>';
+        buf+='<div class="opt'+(s.patty==="double"?" on":"")+'" onclick="event.stopPropagation();sp(\''+item.id+'\',\'double\')">Double +0.420</div>';
+        buf+='</div>';
+      }
+      if(item.t==="strips"){
+        buf+='<div class="opt-row">';
+        buf+='<div class="opt'+(s.strips===3?" on":"")+'" onclick="event.stopPropagation();ss(\''+item.id+'\',3)">3 strips — 1.470</div>';
+        buf+='<div class="opt'+(s.strips===5?" on":"")+'" onclick="event.stopPropagation();ss(\''+item.id+'\',5)">5 strips — 1.890</div>';
+        buf+='</div>';
+      }
+      buf+='<div class="ctrl-row">';
+      buf+='<div class="qty-box">';
+      buf+='<button class="qty-btn" onclick="event.stopPropagation();chq(\''+item.id+'\',-1)">−</button>';
+      buf+='<span class="qty-n">'+s.q+'</span>';
+      buf+='<button class="qty-btn" onclick="event.stopPropagation();chq(\''+item.id+'\',1)">+</button>';
+      buf+='</div>';
+      buf+='<input class="note-in" type="text" placeholder="Note (e.g. no onions)" value="'+s.note.replace(/"/g,'&quot;')+'" oninput="ST[\''+item.id+'\'].note=this.value" onclick="event.stopPropagation()"/>';
+      buf+='</div></div>';
+    }
+    buf+='</div>';
   });
-  if(sectionHasItems) html+=`<div class="section-label">${lastSection}</div>`+sectionBuffer;
-  if(q&&!html) html=`<div class="no-results">No items found for "${q}"</div>`;
-  document.getElementById("menu-list").innerHTML=html;
-  updateBar();
+  if(has)html+='<div class="sec-lbl">'+sec+'</div>'+buf;
+  if(q&&!html)html='<div class="no-res">No items found</div>';
+  document.getElementById("menu").innerHTML=html;
+  bar();
 }
 
-function toggleItem(id){
-  state[id].checked=!state[id].checked;
-  renderMenu();
-}
-function changeQty(id,d){state[id].qty=Math.max(1,state[id].qty+d);renderMenu();}
-function setPatty(id,v){state[id].patty=v;renderMenu();}
-function setStrips(id,v){state[id].strips=v;renderMenu();}
+function tog(id){ST[id].on=!ST[id].on;render();}
+function chq(id,d){ST[id].q=Math.max(1,ST[id].q+d);render();}
+function sp(id,v){ST[id].patty=v;render();}
+function ss(id,v){ST[id].strips=v;render();}
 
-function copyOrder(){
-  const plate=document.getElementById("plate").value.trim().toUpperCase();
-  const sel=items.filter(i=>state[i.id].checked);
-  if(!sel.length){showToast("No items selected!");return;}
-  const num=orderNum;
-  let lines=[`*ORDER #${num}*`];
-  if(plate) lines.push(`Plate: *${plate}*`);
+function copy(){
+  var plate=document.getElementById("plate").value.trim();
+  var sel=items.filter(function(i){return ST[i.id].on;});
+  if(!sel.length){toast("No items selected!");return;}
+  var num=onum,lines=["*ORDER #"+num+"*"];
+  if(plate)lines.push("Plate: *"+plate+"*");
   lines.push("");
-  let lastSec="";
-  MENU.forEach(item=>{
-    if(item.section){lastSec=item.section;return;}
-    if(!state[item.id].checked) return;
-    const s=state[item.id];
-    if(lines[lines.length-1]!==`*${lastSec}*`) lines.push(`*${lastSec}*`);
-    const bp=itemBasePrice(item);
-    const vp=withVAT(bp);
-    let label=item.name;
-    if(item.type==="burger") label+=s.patty==="double"?" (double patty)":" (single patty)";
-    if(item.type==="strips") label+=` (${s.strips} strips)`;
-    let line=`• ${s.qty}x ${label} — ${(vp*s.qty).toFixed(3)} OMR`;
-    if(s.note) line+=`\n  _(${s.note})_`;
+  var lsec="";
+  MENU.forEach(function(item){
+    if(item.s){lsec=item.s;return;}
+    if(!ST[item.id].on)return;
+    var s=ST[item.id];
+    if(lines[lines.length-1]!=="*"+lsec+"*")lines.push("*"+lsec+"*");
+    var price=(vp(item)*s.q).toFixed(3);
+    var lbl=item.n;
+    if(item.t==="b")lbl+=s.patty==="double"?" (double patty)":" (single patty)";
+    if(item.t==="strips")lbl+=" ("+s.strips+" strips)";
+    var line="• "+s.q+"x "+lbl+" — "+price+" OMR";
+    if(s.note)line+="\n  _("+s.note+")_";
     lines.push(line);
   });
-  const total=getTotal();
-  const vat=total-(total/(1+VAT));
+  var t=total(),v=t-t/1.05;
   lines.push("");
-  lines.push(`Subtotal: ${(total/(1+VAT)).toFixed(3)} OMR`);
-  lines.push(`VAT (5%): ${vat.toFixed(3)} OMR`);
-  lines.push(`*Total: ${total.toFixed(3)} OMR*`);
-  const text=lines.join("\n");
-  history.unshift({num,plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:total.toFixed(3),items:sel.map(i=>({id:i.id,name:i.name,qty:state[i.id].qty,note:state[i.id].note,patty:state[i.id].patty,strips:state[i.id].strips,type:i.type}))});
-  orderNum++;
-  document.getElementById("order-counter").textContent="Order #"+orderNum;
-  updateHistCount();
+  lines.push("Subtotal: "+(t/1.05).toFixed(3)+" OMR");
+  lines.push("VAT (5%): "+v.toFixed(3)+" OMR");
+  lines.push("*Total: "+t.toFixed(3)+" OMR*");
+  var txt=lines.join("\n");
+  hist.unshift({num:num,plate:plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:t.toFixed(3),items:sel.map(function(i){return{id:i.id,n:i.n,q:ST[i.id].q,note:ST[i.id].note,patty:ST[i.id].patty,strips:ST[i.id].strips,t:i.t};})});
+  onum++;
+  document.getElementById("badge").textContent="Order #"+onum;
+  hbadge();
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(()=>showToast("Copied! Paste in WhatsApp")).catch(()=>fallbackCopy(text));
-  } else fallbackCopy(text);
+    navigator.clipboard.writeText(txt).then(function(){toast("Copied! Paste in WhatsApp");}).catch(function(){fb(txt);});
+  }else{fb(txt);}
 }
 
-function fallbackCopy(t){
-  const ta=document.createElement("textarea");ta.value=t;ta.style.position="absolute";ta.style.left="-9999px";
-  document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
-  showToast("Copied! Paste in WhatsApp");
+function fb(t){
+  var ta=document.createElement("textarea");
+  ta.value=t;ta.style.cssText="position:fixed;top:0;left:0;opacity:0;";
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand("copy");}catch(e){}
+  document.body.removeChild(ta);
+  toast("Copied! Paste in WhatsApp");
 }
 
-function resetAll(){
-  items.forEach(i=>{state[i.id]={checked:false,qty:1,note:"",patty:"single",strips:3};});
+function reset(){
+  items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3};});
   document.getElementById("plate").value="";
   document.getElementById("search").value="";
-  renderMenu();
+  render();
 }
 
-function showToast(msg){
-  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2500);
+function toast(msg){
+  var el=document.getElementById("toast");
+  el.textContent=msg;el.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t=setTimeout(function(){el.classList.remove("show");},2500);
 }
 
-function switchTab(tab){
-  document.getElementById("tab-menu").classList.toggle("active",tab==="menu");
-  document.getElementById("tab-history").classList.toggle("active",tab==="history");
-  document.getElementById("panel-menu").style.display=tab==="menu"?"":"none";
-  document.getElementById("panel-history").style.display=tab==="history"?"":"none";
-  document.getElementById("sticky-bar").style.display=tab==="menu"?"":"none";
-  if(tab==="history") renderHistory();
+function tab(name){
+  document.getElementById("t-menu").classList.toggle("active",name==="menu");
+  document.getElementById("t-hist").classList.toggle("active",name==="hist");
+  document.getElementById("p-menu").style.display=name==="menu"?"":"none";
+  document.getElementById("p-hist").style.display=name==="hist"?"":"none";
+  document.getElementById("bar").style.display=name==="menu"?"":"none";
+  if(name==="hist")rhist();
 }
 
-function updateHistCount(){
-  const el=document.getElementById("hist-count");
-  if(history.length>0){el.style.display="";el.textContent=history.length;}else el.style.display="none";
+function hbadge(){
+  var el=document.getElementById("hbadge");
+  if(hist.length){el.style.display="";el.textContent=hist.length;}
+  else el.style.display="none";
 }
 
-function renderHistory(){
-  const container=document.getElementById("history-list");
-  if(!history.length){container.innerHTML=`<div class="history-empty">No orders yet this session.</div>`;return;}
-  container.innerHTML=history.map(h=>`
-    <div class="hist-card">
-      <div class="hist-header">
-        <div><span class="hist-num">Order #${h.num}</span>${h.plate?`<span class="hist-plate">${h.plate}</span>`:""}</div>
-        <div class="hist-time">${h.time}</div>
-      </div>
-      <div class="hist-items">${h.items.map(i=>{
-        let extra="";
-        if(i.type==="burger") extra=i.patty==="double"?" · double patty":"";
-        if(i.type==="strips") extra=` · ${i.strips} strips`;
-        return `<div class="hist-item-line">${i.qty}x ${i.name}${extra}${i.note?` <span style="color:#333;font-size:11px;">(${i.note})</span>`:""}</div>`;
-      }).join("")}</div>
-      <div class="hist-footer">
-        <span class="hist-total">${h.total} OMR</span>
-        <button class="btn-repeat" onclick="repeatOrder(${h.num})">Repeat</button>
-      </div>
-    </div>`).join("");
+function rhist(){
+  var c=document.getElementById("hlist");
+  if(!hist.length){c.innerHTML='<div class="hist-empty">No orders yet this session.</div>';return;}
+  c.innerHTML=hist.map(function(h){
+    var items=h.items.map(function(i){
+      var e="";
+      if(i.t==="b")e=i.patty==="double"?" · double":"";
+      if(i.t==="strips")e=" · "+i.strips+"pc";
+      var note=i.note?'<span style="color:#2e2e2e;font-size:11px;"> ('+i.note+')</span>':"";
+      return '<div class="hline">'+i.q+'x '+i.n+e+note+'</div>';
+    }).join("");
+    return '<div class="hcard"><div class="hcard-head"><div><span class="hnum">Order #'+h.num+'</span>'+(h.plate?'<span class="hplate">'+h.plate+'</span>':"")+
+    '</div><div class="htime">'+h.time+'</div></div><div class="hitems">'+items+'</div>'+
+    '<div class="hfoot"><span class="htotal">'+h.total+' OMR</span>'+
+    '<button class="btn-rep" onclick="rep('+h.num+')">Repeat</button></div></div>';
+  }).join("");
 }
 
-function repeatOrder(num){
-  const h=history.find(x=>x.num===num);if(!h)return;
-  resetAll();
-  h.items.forEach(i=>{
-    if(state[i.id]){state[i.id].checked=true;state[i.id].qty=i.qty;state[i.id].note=i.note;
-    if(i.patty) state[i.id].patty=i.patty;
-    if(i.strips) state[i.id].strips=i.strips;}
+function rep(num){
+  var h=hist.find(function(x){return x.num===num;});if(!h)return;
+  reset();
+  h.items.forEach(function(i){
+    if(ST[i.id]){ST[i.id].on=true;ST[i.id].q=i.q;ST[i.id].note=i.note;
+    if(i.patty)ST[i.id].patty=i.patty;if(i.strips)ST[i.id].strips=i.strips;}
   });
-  if(h.plate) document.getElementById("plate").value=h.plate;
-  switchTab("menu");renderMenu();showToast("Order #"+num+" loaded!");
+  if(h.plate)document.getElementById("plate").value=h.plate;
+  tab("menu");render();toast("Order #"+num+" loaded!");
 }
 
-renderMenu();
+render();
 </script>
+</body>
+</html>
