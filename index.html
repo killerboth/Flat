@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Flat — Order System</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+.app{background:#111;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:140px;}
+.header{background:#000;padding:20px 16px 16px;text-align:center;border-bottom:0.5px solid #222;}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.logo{font-size:24px;font-weight:500;letter-spacing:4px;color:#fff;}
+.order-badge{background:#222;color:#fff;font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;border:0.5px solid #333;}
+.header-sub{font-size:11px;color:#555;letter-spacing:0.5px;}
+.tabs{display:flex;background:#000;border-bottom:0.5px solid #222;position:sticky;top:0;z-index:10;}
+.tab{flex:1;padding:12px 8px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:#555;border-bottom:2px solid transparent;transition:all 0.15s;}
+.tab.active{color:#fff;border-bottom:2px solid #fff;}
+.search-bar{padding:12px;background:#000;border-bottom:0.5px solid #1e1e1e;}
+.search-bar input{width:100%;padding:9px 14px;border-radius:20px;border:0.5px solid #2a2a2a;background:#1a1a1a;font-size:14px;color:#fff;outline:none;}
+.search-bar input::placeholder{color:#555;}
+.section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:#444;padding:16px 16px 6px;}
+.item-card{background:#1a1a1a;margin:0 12px 6px;border-radius:14px;border:0.5px solid #252525;overflow:hidden;transition:border-color 0.15s;}
+.item-card.selected{border:1.5px solid #fff;}
+.item-row{display:flex;align-items:center;padding:13px 14px;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid #333;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.check-box.on{background:#fff;border-color:#fff;}
+.check-box.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #111;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
+.item-name{font-size:14px;font-weight:500;color:#f0f0f0;}
+.item-desc{font-size:11px;color:#555;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.item-price{font-size:13px;font-weight:500;color:#aaa;flex-shrink:0;}
+.item-controls{padding:0 14px 12px;display:flex;align-items:center;gap:10px;}
+.qty-wrap{display:flex;align-items:center;gap:8px;background:#222;border-radius:20px;padding:4px 10px;}
+.qty-btn{width:24px;height:24px;border-radius:50%;border:none;background:none;font-size:18px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;}
+.qty-num{font-size:14px;font-weight:500;min-width:16px;text-align:center;color:#fff;}
+.note-input{flex:1;font-size:12px;padding:6px 10px;border-radius:20px;border:0.5px solid #2a2a2a;background:#222;color:#fff;outline:none;}
+.note-input::placeholder{color:#555;}
+.plate-section{padding:12px;}
+.plate-card{background:#1a1a1a;border-radius:14px;border:0.5px solid #252525;padding:14px;}
+.plate-lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:#555;margin-bottom:8px;}
+.plate-input{width:100%;font-size:22px;font-weight:500;text-align:center;padding:10px;border-radius:10px;border:1.5px solid #2a2a2a;background:#222;color:#fff;letter-spacing:3px;text-transform:uppercase;outline:none;}
+.plate-input:focus{border-color:#555;}
+.plate-input::placeholder{color:#333;}
+.sticky-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#000;border-top:0.5px solid #222;padding:12px;}
+.total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.total-label{font-size:12px;color:#555;}
+.total-amt{font-size:18px;font-weight:500;color:#fff;}
+.btn-row{display:flex;gap:8px;}
+.btn-copy{flex:1;padding:14px;border-radius:12px;background:#fff;color:#111;border:none;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:0.5px;}
+.btn-copy:active{transform:scale(0.98);}
+.btn-copy:disabled{background:#2a2a2a;color:#555;cursor:default;}
+.btn-reset{padding:14px 16px;border-radius:12px;background:#1a1a1a;color:#666;border:0.5px solid #2a2a2a;font-size:13px;cursor:pointer;}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:456px;background:#fff;color:#111;padding:11px 16px;border-radius:12px;text-align:center;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.25s;pointer-events:none;z-index:100;}
+.toast.show{opacity:1;}
+.history-wrap{padding:12px;}
+.history-empty{text-align:center;padding:40px 20px;color:#444;font-size:14px;}
+.hist-card{background:#1a1a1a;border-radius:14px;border:0.5px solid #252525;margin-bottom:10px;overflow:hidden;}
+.hist-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid #222;}
+.hist-num{font-size:13px;font-weight:500;color:#f0f0f0;}
+.hist-plate{font-size:12px;color:#666;font-weight:500;letter-spacing:1px;}
+.hist-time{font-size:11px;color:#444;}
+.hist-items{padding:10px 14px;}
+.hist-item-line{font-size:13px;color:#888;padding:2px 0;}
+.hist-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#151515;}
+.hist-total{font-size:13px;font-weight:500;color:#f0f0f0;}
+.btn-repeat{font-size:12px;padding:6px 14px;border-radius:20px;background:#fff;color:#111;border:none;cursor:pointer;font-weight:500;}
+.no-results{text-align:center;padding:30px;color:#444;font-size:14px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div style="width:60px;"></div>
+      <div class="logo">FLAT</div>
+      <div class="order-badge" id="order-counter">Order #1</div>
+    </div>
+    <div class="header-sub">Drive-thru order system</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-menu" onclick="switchTab('menu')">Menu</div>
+    <div class="tab" id="tab-history" onclick="switchTab('history')">
+      History <span id="hist-count" style="display:none;background:#fff;color:#111;border-radius:10px;font-size:10px;padding:1px 6px;margin-left:4px;font-weight:500;"></span>
+    </div>
+  </div>
+
+  <div id="panel-menu">
+    <div class="search-bar">
+      <input type="search" id="search" placeholder="Search menu..." oninput="renderMenu()" />
+    </div>
+    <div id="menu-list"></div>
+    <div class="plate-section">
+      <div class="plate-card">
+        <div class="plate-lbl">License plate</div>
+        <input class="plate-input" id="plate" type="text" placeholder="A 12345" maxlength="12" oninput="this.value=this.value.toUpperCase();updateBar()" />
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-history" style="display:none;">
+    <div class="history-wrap" id="history-list"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="sticky-bar" id="sticky-bar">
+    <div class="total-row">
+      <span class="total-label">Order total</span>
+      <span class="total-amt" id="total-display">0.000 OMR</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn-copy" id="copyBtn" onclick="copyOrder()" disabled>Copy for WhatsApp</button>
+      <button class="btn-reset" onclick="resetAll()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MENU=[
+  {section:"Burgers"},
+  {id:"uncle_sam",name:"Uncle Sam",desc:"Angus beef, cheese, signature sauce, sesame brioche",price:1.600},
+  {id:"pats",name:"Pat's Cheeseburger",desc:"Angus beef, cheese, onions, pickles, ketchup & mustard",price:1.600},
+  {id:"truff",name:"Truff",desc:"Angus beef, truffle sauce, melted cheese, sesame brioche",price:2.400},
+  {id:"honey",name:"Honey",desc:"Angus beef, honey, melted cheese, sesame brioche",price:1.800},
+  {id:"crunch",name:"Crunch",desc:"Al Safa fried chicken, house sauce and cheese",price:1.600},
+  {id:"blazing",name:"Blazing Bird",desc:"Al Safa fried chicken, spicy sauce and cheese",price:1.800},
+  {id:"bacon",name:"Bacon Cheeseburger",desc:"Angus beef, cheese, caramelized onions, beef bacon, special sauce",price:2.200},
+  {id:"fh_single",name:"Full House — Single",desc:"Smashed patty, lettuce, tomato, onions, cheese, house sauce",price:2.000},
+  {id:"fh_double",name:"Full House — Double",desc:"2 smashed patties, lettuce, tomato, onions, cheese, house sauce",price:2.400},
+  {section:"Mac & Cheese"},
+  {id:"classic_mac",name:"Classic Mac & Cheese",desc:"Creamy macaroni and cheese",price:1.400},
+  {id:"truff_mac",name:"Truffle Mac & Cheese",desc:"Truffle-infused creamy macaroni and cheese",price:1.600},
+  {section:"Sides"},
+  {id:"norm_fries",name:"Normal Fries",desc:"Golden, crispy fries",price:0.800},
+  {id:"spicy_fries",name:"Spicy Fries",desc:"Fries with spicy seasoning",price:0.900},
+  {id:"strips",name:"Chicken Strips",desc:"Crispy fried chicken strips",price:1.400},
+  {id:"nuggets",name:"Chicken Nuggets",desc:"",price:1.500},
+  {id:"sliders",name:"Sliders Box",desc:"Mini Uncle Sams — smashed beef, cheese, signature sauce",price:9.900},
+  {section:"Drinks"},
+  {id:"water",name:"Water",desc:"",price:0.200},
+  {id:"soda",name:"Soda",desc:"",price:0.400},
+  {section:"Extras"},
+  {id:"beef_extra",name:"Beef Patty",desc:"Extra beef patty",price:0.400},
+  {id:"jalapeno",name:"Jalapeño",desc:"",price:0.100},
+  {id:"pickle",name:"Pickle",desc:"",price:0.100},
+  {id:"cheese_slice",name:"Cheese Slice",desc:"",price:0.100},
+  {id:"blazing_sauce",name:"Blazing Bird Sauce",desc:"",price:0.200},
+  {id:"honey_sauce",name:"Honey Sauce",desc:"",price:0.300},
+];
+
+const items=MENU.filter(i=>!i.section);
+const state={};
+items.forEach(i=>{state[i.id]={checked:false,qty:1,note:""};});
+let orderNum=1;
+let history=[];
+
+function getTotal(){return items.filter(i=>state[i.id].checked).reduce((s,i)=>s+i.price*state[i.id].qty,0);}
+
+function updateBar(){
+  document.getElementById("total-display").textContent=getTotal().toFixed(3)+" OMR";
+  document.getElementById("copyBtn").disabled=items.filter(i=>state[i.id].checked).length===0;
+}
+
+function renderMenu(){
+  const q=(document.getElementById("search").value||"").toLowerCase().trim();
+  let html="",lastSection="",sectionHasItems=false,sectionBuffer="";
+  MENU.forEach(item=>{
+    if(item.section){
+      if(sectionHasItems)html+=`<div class="section-label">${lastSection}</div>`+sectionBuffer;
+      lastSection=item.section;sectionBuffer="";sectionHasItems=false;return;
+    }
+    if(q&&!item.name.toLowerCase().includes(q)&&!item.desc.toLowerCase().includes(q))return;
+    sectionHasItems=true;
+    const s=state[item.id];
+    sectionBuffer+=`<div class="item-card${s.checked?" selected":""}" id="card-${item.id}">
+      <div class="item-row" onclick="toggleItem('${item.id}')">
+        <div class="check-box${s.checked?" on":""}"></div>
+        <div style="flex:1;min-width:0;">
+          <div class="item-name">${item.name}</div>
+          ${item.desc?`<div class="item-desc">${item.desc}</div>`:""}
+        </div>
+        <div class="item-price">${item.price.toFixed(3)}</div>
+      </div>
+      ${s.checked?`<div class="item-controls">
+        <div class="qty-wrap">
+          <button class="qty-btn" onclick="event.stopPropagation();changeQty('${item.id}',-1)">−</button>
+          <span class="qty-num">${s.qty}</span>
+          <button class="qty-btn" onclick="event.stopPropagation();changeQty('${item.id}',1)">+</button>
+        </div>
+        <input class="note-input" type="text" placeholder="Note (e.g. no onions)" value="${s.note.replace(/"/g,'&quot;')}" oninput="state['${item.id}'].note=this.value" onclick="event.stopPropagation()" />
+      </div>`:""}
+    </div>`;
+  });
+  if(sectionHasItems)html+=`<div class="section-label">${lastSection}</div>`+sectionBuffer;
+  if(q&&!html)html=`<div class="no-results">No items found for "${q}"</div>`;
+  document.getElementById("menu-list").innerHTML=html;
+  updateBar();
+}
+
+function toggleItem(id){state[id].checked=!state[id].checked;renderMenu();}
+function changeQty(id,d){state[id].qty=Math.max(1,state[id].qty+d);renderMenu();}
+
+function copyOrder(){
+  const plate=document.getElementById("plate").value.trim().toUpperCase();
+  const sel=items.filter(i=>state[i.id].checked);
+  if(!sel.length){showToast("No items selected!");return;}
+  const num=orderNum;
+  let lines=[`*ORDER #${num}*`];
+  if(plate)lines.push(`Plate: *${plate}*`);
+  lines.push("");
+  let lastSec="";
+  MENU.forEach(item=>{
+    if(item.section){lastSec=item.section;return;}
+    if(!state[item.id].checked)return;
+    const s=state[item.id];
+    if(lines[lines.length-1]!==`*${lastSec}*`)lines.push(`*${lastSec}*`);
+    let line=`• ${s.qty}x ${item.name} — ${(item.price*s.qty).toFixed(3)} OMR`;
+    if(s.note)line+=`\n  _(${s.note})_`;
+    lines.push(line);
+  });
+  lines.push("");lines.push(`*Total: ${getTotal().toFixed(3)} OMR*`);
+  const text=lines.join("\n");
+  history.unshift({num,plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:getTotal().toFixed(3),items:sel.map(i=>({id:i.id,name:i.name,qty:state[i.id].qty,note:state[i.id].note,price:i.price}))});
+  orderNum++;
+  document.getElementById("order-counter").textContent="Order #"+orderNum;
+  updateHistCount();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast("Copied! Paste in WhatsApp")).catch(()=>fallbackCopy(text));
+  } else fallbackCopy(text);
+}
+
+function fallbackCopy(t){
+  const ta=document.createElement("textarea");ta.value=t;ta.style.position="absolute";ta.style.left="-9999px";
+  document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+  showToast("Copied! Paste in WhatsApp");
+}
+
+function resetAll(){
+  items.forEach(i=>{state[i.id]={checked:false,qty:1,note:""};});
+  document.getElementById("plate").value="";document.getElementById("search").value="";renderMenu();
+}
+
+function showToast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+function switchTab(tab){
+  document.getElementById("tab-menu").classList.toggle("active",tab==="menu");
+  document.getElementById("tab-history").classList.toggle("active",tab==="history");
+  document.getElementById("panel-menu").style.display=tab==="menu"?"":"none";
+  document.getElementById("panel-history").style.display=tab==="history"?"":"none";
+  document.getElementById("sticky-bar").style.display=tab==="menu"?"":"none";
+  if(tab==="history")renderHistory();
+}
+
+function updateHistCount(){
+  const el=document.getElementById("hist-count");
+  if(history.length>0){el.style.display="";el.textContent=history.length;}else el.style.display="none";
+}
+
+function renderHistory(){
+  const container=document.getElementById("history-list");
+  if(!history.length){container.innerHTML=`<div class="history-empty">No orders yet this session.</div>`;return;}
+  container.innerHTML=history.map(h=>`
+    <div class="hist-card">
+      <div class="hist-header">
+        <div><span class="hist-num">Order #${h.num}</span>${h.plate?`<span class="hist-plate" style="margin-left:8px;">${h.plate}</span>`:""}</div>
+        <div class="hist-time">${h.time}</div>
+      </div>
+      <div class="hist-items">${h.items.map(i=>`<div class="hist-item-line">${i.qty}x ${i.name}${i.note?` <span style="color:#444;font-size:11px;">(${i.note})</span>`:""}</div>`).join("")}</div>
+      <div class="hist-footer">
+        <span class="hist-total">${h.total} OMR</span>
+        <button class="btn-repeat" onclick="repeatOrder(${h.num})">Repeat</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function repeatOrder(num){
+  const h=history.find(x=>x.num===num);if(!h)return;
+  resetAll();
+  h.items.forEach(i=>{if(state[i.id]){state[i.id].checked=true;state[i.id].qty=i.qty;state[i.id].note=i.note;}});
+  if(h.plate)document.getElementById("plate").value=h.plate;
+  switchTab("menu");renderMenu();showToast("Order #"+num+" loaded — ready to copy!");
+}
+
+renderMenu();
+</script>
+</body>
+</html>
