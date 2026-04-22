@@ -113,9 +113,9 @@ html,body{
   animation:slideDown 0.18s ease;
 }
 @keyframes slideDown{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
-.opt-row{display:flex;gap:7px;}
+.opt-row{display:flex;gap:7px;flex-wrap:wrap;}
 .opt{
-  flex:1;padding:8px 6px;border-radius:10px;
+  flex:1;min-width:calc(33% - 7px);padding:8px 6px;border-radius:10px;
   border:0.5px solid var(--border2);background:var(--bg3);
   color:#666;font-size:12px;font-weight:500;
   cursor:pointer;text-align:center;
@@ -303,8 +303,8 @@ var MENU=[
   {s:"Sides"},
   {id:"nfries",n:"Normal Fries",d:"Golden, crispy fries",p:0.800},
   {id:"sfries",n:"Spicy Fries",d:"Fries with spicy seasoning",p:0.900},
-  {id:"strips",n:"Chicken Strips",d:"Choose 3 or 5 strips",p:1.400,t:"strips"},
-  {id:"nuggets",n:"Chicken Nuggets",d:"",p:1.500},
+  {id:"strips",n:"Chicken Strips",d:"Normal or spicy · 3 or 5 strips",p:1.400,t:"strips"},
+  {id:"nuggets",n:"Chicken Nuggets",d:"6, 9, or 20 pieces",p:1.500,t:"nuggets"},
   {id:"sliders",n:"Sliders Box",d:"Mini Uncle Sams — smashed beef, cheese, signature sauce",p:9.900},
   {s:"Drinks"},
   {id:"water",n:"Water",d:"",p:0.200},
@@ -320,13 +320,14 @@ var MENU=[
 
 var items=MENU.filter(function(x){return !x.s;});
 var ST={};
-items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3};});
+items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3,stripsSpicy:"normal",nuggets:6};});
 var onum=1,hist=[];
 
 function bp(item){
   var s=ST[item.id];
   if(item.t==="b") return item.p+(s.patty==="double"?0.4:0);
   if(item.t==="strips") return s.strips===5?1.8:1.4;
+  if(item.t==="nuggets") return s.nuggets===20?3.8:s.nuggets===9?1.8:1.5;
   return item.p;
 }
 function vp(item){return bp(item)*1.05;}
@@ -345,7 +346,8 @@ function bar(){
   el.innerHTML=sel.map(function(i){
     var s=ST[i.id],l=s.q+"x "+i.n;
     if(i.t==="b"&&s.patty==="double")l+=" (dbl)";
-    if(i.t==="strips")l+=" ("+s.strips+"pc)";
+    if(i.t==="strips")l+=" ("+s.strips+"pc "+(s.stripsSpicy==="spicy"?"🌶":"")+" )";
+    if(i.t==="nuggets")l+=" ("+s.nuggets+"pcs)";
     return '<div class="pill">'+l+'</div>';
   }).join("");
 }
@@ -361,12 +363,16 @@ function render(){
     if(q&&item.n.toLowerCase().indexOf(q)<0&&(item.d||"").toLowerCase().indexOf(q)<0)return;
     has=true;
     var s=ST[item.id],price=vp(item).toFixed(3);
+    var priceLabel=price;
+    if(item.t==="b"&&!s.on) priceLabel="from "+(item.p*1.05).toFixed(3);
+    if(item.t==="strips"&&!s.on) priceLabel="from "+(1.4*1.05).toFixed(3);
+    if(item.t==="nuggets"&&!s.on) priceLabel="from "+(1.5*1.05).toFixed(3);
     buf+='<div class="card'+(s.on?" on":"")+'" id="c-'+item.id+'">';
     buf+='<div class="card-row" onclick="tog(\''+item.id+'\')">';
     buf+='<div class="chk'+(s.on?" on":"")+'"></div>';
     buf+='<div style="flex:1;min-width:0"><div class="item-name">'+item.n+'</div>';
     if(item.d)buf+='<div class="item-desc">'+item.d+'</div>';
-    buf+='</div><div class="item-price">'+price+'</div></div>';
+    buf+='</div><div class="item-price">'+(s.on?price:priceLabel)+'</div></div>';
     if(s.on){
       buf+='<div class="controls">';
       if(item.t==="b"){
@@ -377,8 +383,19 @@ function render(){
       }
       if(item.t==="strips"){
         buf+='<div class="opt-row">';
+        buf+='<div class="opt'+(s.stripsSpicy==="normal"?" on":"")+'" onclick="event.stopPropagation();ssp(\''+item.id+'\',\'normal\')">Normal</div>';
+        buf+='<div class="opt'+(s.stripsSpicy==="spicy"?" on":"")+'" onclick="event.stopPropagation();ssp(\''+item.id+'\',\'spicy\')">Spicy</div>';
+        buf+='</div>';
+        buf+='<div class="opt-row">';
         buf+='<div class="opt'+(s.strips===3?" on":"")+'" onclick="event.stopPropagation();ss(\''+item.id+'\',3)">3 strips — 1.470</div>';
         buf+='<div class="opt'+(s.strips===5?" on":"")+'" onclick="event.stopPropagation();ss(\''+item.id+'\',5)">5 strips — 1.890</div>';
+        buf+='</div>';
+      }
+      if(item.t==="nuggets"){
+        buf+='<div class="opt-row">';
+        buf+='<div class="opt'+(s.nuggets===6?" on":"")+'" onclick="event.stopPropagation();sng(\''+item.id+'\',6)">6 pcs — 1.575</div>';
+        buf+='<div class="opt'+(s.nuggets===9?" on":"")+'" onclick="event.stopPropagation();sng(\''+item.id+'\',9)">9 pcs — 1.890</div>';
+        buf+='<div class="opt'+(s.nuggets===20?" on":"")+'" onclick="event.stopPropagation();sng(\''+item.id+'\',20)">20 pcs — 3.990</div>';
         buf+='</div>';
       }
       buf+='<div class="ctrl-row">';
@@ -402,6 +419,8 @@ function tog(id){ST[id].on=!ST[id].on;render();}
 function chq(id,d){ST[id].q=Math.max(1,ST[id].q+d);render();}
 function sp(id,v){ST[id].patty=v;render();}
 function ss(id,v){ST[id].strips=v;render();}
+function ssp(id,v){ST[id].stripsSpicy=v;render();}
+function sng(id,v){ST[id].nuggets=v;render();}
 
 function copy(){
   var plate=document.getElementById("plate").value.trim();
@@ -419,7 +438,8 @@ function copy(){
     var price=(vp(item)*s.q).toFixed(3);
     var lbl=item.n;
     if(item.t==="b")lbl+=s.patty==="double"?" (double patty)":" (single patty)";
-    if(item.t==="strips")lbl+=" ("+s.strips+" strips)";
+    if(item.t==="strips")lbl+=" ("+s.strips+" strips, "+(s.stripsSpicy||"normal")+")";
+    if(item.t==="nuggets")lbl+=" ("+s.nuggets+" pcs)";
     var line="• "+s.q+"x "+lbl+" — "+price+" OMR";
     if(s.note)line+="\n  _("+s.note+")_";
     lines.push(line);
@@ -430,7 +450,7 @@ function copy(){
   lines.push("VAT (5%): "+v.toFixed(3)+" OMR");
   lines.push("*Total: "+t.toFixed(3)+" OMR*");
   var txt=lines.join("\n");
-  hist.unshift({num:num,plate:plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:t.toFixed(3),items:sel.map(function(i){return{id:i.id,n:i.n,q:ST[i.id].q,note:ST[i.id].note,patty:ST[i.id].patty,strips:ST[i.id].strips,t:i.t};})});
+  hist.unshift({num:num,plate:plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:t.toFixed(3),items:sel.map(function(i){return{id:i.id,n:i.n,q:ST[i.id].q,note:ST[i.id].note,patty:ST[i.id].patty,strips:ST[i.id].strips,stripsSpicy:ST[i.id].stripsSpicy,nuggets:ST[i.id].nuggets,t:i.t};})});
   onum++;
   document.getElementById("badge").textContent="Order #"+onum;
   hbadge();
@@ -449,7 +469,7 @@ function fb(t){
 }
 
 function reset(){
-  items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3};});
+  items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3,stripsSpicy:"normal",nuggets:6};});
   document.getElementById("plate").value="";
   document.getElementById("search").value="";
   render();
@@ -484,7 +504,8 @@ function rhist(){
     var items=h.items.map(function(i){
       var e="";
       if(i.t==="b")e=i.patty==="double"?" · double":"";
-      if(i.t==="strips")e=" · "+i.strips+"pc";
+      if(i.t==="strips")e=" · "+i.strips+"pc "+(i.stripsSpicy||"normal");
+      if(i.t==="nuggets")e=" · "+i.nuggets+"pcs";
       var note=i.note?'<span style="color:#2e2e2e;font-size:11px;"> ('+i.note+')</span>':"";
       return '<div class="hline">'+i.q+'x '+i.n+e+note+'</div>';
     }).join("");
@@ -500,7 +521,10 @@ function rep(num){
   reset();
   h.items.forEach(function(i){
     if(ST[i.id]){ST[i.id].on=true;ST[i.id].q=i.q;ST[i.id].note=i.note;
-    if(i.patty)ST[i.id].patty=i.patty;if(i.strips)ST[i.id].strips=i.strips;}
+    if(i.patty)ST[i.id].patty=i.patty;
+    if(i.strips)ST[i.id].strips=i.strips;
+    if(i.stripsSpicy)ST[i.id].stripsSpicy=i.stripsSpicy;
+    if(i.nuggets)ST[i.id].nuggets=i.nuggets;}
   });
   if(h.plate)document.getElementById("plate").value=h.plate;
   tab("menu");render();toast("Order #"+num+" loaded!");
