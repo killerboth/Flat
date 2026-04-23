@@ -279,7 +279,7 @@ html,body{
     </div>
   </div>
   <div class="btn-row">
-    <button class="btn-copy" id="copybtn" disabled onclick="copy()">Copy for WhatsApp</button>
+    <button class="btn-copy" id="copybtn" disabled onclick="sendWA()">Send to WhatsApp</button>
     <button class="btn-reset" onclick="reset()">Reset</button>
   </div>
 </div>
@@ -422,7 +422,7 @@ function ss(id,v){ST[id].strips=v;render();}
 function ssp(id,v){ST[id].stripsSpicy=v;render();}
 function sng(id,v){ST[id].nuggets=v;render();}
 
-function copy(){
+function sendWA(){
   var plate=document.getElementById("plate").value.trim();
   var sel=items.filter(function(i){return ST[i.id].on;});
   if(!sel.length){toast("No items selected!");return;}
@@ -450,24 +450,27 @@ function copy(){
   lines.push("VAT (5%): "+v.toFixed(3)+" OMR");
   lines.push("*Total: "+t.toFixed(3)+" OMR*");
   var txt=lines.join("\n");
+  // Save to history
   hist.unshift({num:num,plate:plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:t.toFixed(3),items:sel.map(function(i){return{id:i.id,n:i.n,q:ST[i.id].q,note:ST[i.id].note,patty:ST[i.id].patty,strips:ST[i.id].strips,stripsSpicy:ST[i.id].stripsSpicy,nuggets:ST[i.id].nuggets,t:i.t};})});
   onum++;
   document.getElementById("badge").textContent="Order #"+onum;
   hbadge();
+  // Copy text to clipboard then open WhatsApp group
+  function openGroup(){
+    window.open("https://chat.whatsapp.com/HNmlbCvpsoQBA24FOwodVX","_blank");
+    toast("Order copied! Paste & send in WhatsApp ✓");
+  }
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(function(){toast("Copied! Paste in WhatsApp");}).catch(function(){fb(txt);});
-  }else{fb(txt);}
+    navigator.clipboard.writeText(txt).then(openGroup).catch(function(){fb2(txt);openGroup();});
+  } else {fb2(txt);openGroup();}
 }
-
-function fb(t){
+function fb2(t){
   var ta=document.createElement("textarea");
   ta.value=t;ta.style.cssText="position:fixed;top:0;left:0;opacity:0;";
   document.body.appendChild(ta);ta.focus();ta.select();
   try{document.execCommand("copy");}catch(e){}
   document.body.removeChild(ta);
-  toast("Copied! Paste in WhatsApp");
 }
-
 function reset(){
   items.forEach(function(i){ST[i.id]={on:false,q:1,note:"",patty:"single",strips:3,stripsSpicy:"normal",nuggets:6};});
   document.getElementById("plate").value="";
