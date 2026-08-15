@@ -59,6 +59,16 @@
     text-transform:uppercase;
   }
   .sub{font-size:14px;color:var(--text-muted);}
+  .save-status{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.5px;
+    margin:6px 0 20px;
+    min-height:14px;
+  }
+  .save-status.saving{color:var(--text-muted);}
+  .save-status.ok{color:var(--success);}
+  .save-status.error{color:var(--ketchup);}
 
   .panel{
     background:var(--surface);
@@ -159,18 +169,33 @@
     margin-bottom:8px;
   }
   .day-sched{color:var(--text-muted);font-weight:400;}
-  .time-row{display:flex;gap:6px;margin-bottom:6px;}
-  input[type=time]{
+  .time-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .time-io-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    color:var(--text-muted);
+    width:26px;
+    flex-shrink:0;
+  }
+  .time-select-group{display:flex;align-items:center;gap:4px;flex:1;}
+  .time-select-group select.tsel:first-child{flex:1.3;}
+  .time-select-group select.tsel:last-child{flex:1;}
+  select.tsel{
     background:var(--bg);
     border:1px solid var(--line);
     color:var(--text);
     border-radius:5px;
-    padding:6px 6px;
+    padding:9px 4px;
     font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
+    font-size:14px;
     width:100%;
-    color-scheme:dark;
+    text-align:center;
+    -webkit-appearance:none;
+    appearance:none;
+    min-height:40px;
   }
+  select.tsel:focus{outline:2px solid var(--mustard);outline-offset:1px;}
+  .tsel-colon{color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
   .day-result{
     font-family:'IBM Plex Mono',monospace;
     font-size:12px;
@@ -179,6 +204,7 @@
   }
   .day-result b{color:var(--text);}
   .day-off{color:#5c5346;font-size:11px;font-style:italic;}
+  .late-tag{color:var(--ketchup);}
 
   /* receipt */
   .receipt-wrap{display:flex;justify-content:center;margin-top:36px;}
@@ -255,6 +281,8 @@
     <div class="sub" id="weekRange"></div>
   </header>
 
+  <div id="saveStatus" class="save-status"></div>
+
   <div class="panel">
     <h2>Staff Roster</h2>
     <div class="add-row">
@@ -305,23 +333,43 @@ let state = { waiters: [], entries: {} }; // entries[name][dayKey] = {in:'HH:MM'
 
 function emptyDays(){
   const d = {};
-  DAYS.forEach(day => d[day.key] = {in:'', out:''});
+  DAYS.forEach(day => d[day.key] = {in:{h:'',m:''}, out:{h:'',m:''}});
   return d;
 }
 
+const SHIFT_START = 18 * 60; // 6:00 PM, in minutes
+const GRACE_MINUTES = 30;    // arriving up to 30 min late is not cut
+
 function calcDay(entry){
-  if(!entry || !entry.in || !entry.out) return {hours:0, pay:0, worked:false};
-  const [inH,inM] = entry.in.split(':').map(Number);
-  const [outH,outM] = entry.out.split(':').map(Number);
-  let start = inH*60 + inM;
-  let end = outH*60 + outM;
-  if(end <= start) end += 24*60; // crossed midnight
-  let diffHours = (end - start) / 60;
+  if(!entry || !entry.in || !entry.out) return {hours:0, pay:0, worked:false, cutLate:0};
+  const {h:inH, m:inM} = entry.in;
+  const {h:outH, m:outM} = entry.out;
+  if(inH==='' || inM==='' || outH==='' || outM==='') return {hours:0, pay:0, worked:false, cutLate:0};
+  let clockIn = Number(inH)*60 + Number(inM);
+  let end = Number(outH)*60 + Number(outM);
+  if(end <= clockIn) end += 24*60; // crossed midnight
+
+  const lateMinutes = clockIn - SHIFT_START;
+  // Arrived on time or early: pay from actual clock-in (full credit for early hours).
+  // Arrived late but within grace (<=30 min): pay from the scheduled 6:00 PM start (not cut).
+  // Arrived more than 30 min late: pay only from actual arrival time (cut).
+  let effectiveStart;
+  let cutLate = 0;
+  if(lateMinutes <= 0){
+    effectiveStart = clockIn;
+  } else if(lateMinutes <= GRACE_MINUTES){
+    effectiveStart = SHIFT_START;
+  } else {
+    effectiveStart = clockIn;
+    cutLate = lateMinutes;
+  }
+
+  let diffHours = (end - effectiveStart) / 60;
   // round to nearest half hour
   diffHours = Math.round(diffHours * 2) / 2;
-  if(diffHours <= 0) return {hours:0, pay:0, worked:false};
+  if(diffHours <= 0) return {hours:0, pay:0, worked:false, cutLate:0};
   const pay = diffHours * 1 + 1; // 1 OMR/hour + 1 OMR/day worked
-  return {hours:diffHours, pay:pay, worked:true};
+  return {hours:diffHours, pay:pay, worked:true, cutLate: cutLate};
 }
 
 function calcWaiterTotal(name){
@@ -352,6 +400,7 @@ async function loadState(){
       const parsed = JSON.parse(res.value);
       state.waiters = parsed.waiters || [];
       state.entries = parsed.entries || {};
+      migrateEntries();
     }
   }catch(e){
     // no saved data yet, start fresh
@@ -359,12 +408,43 @@ async function loadState(){
   render();
 }
 
+function migrateEntries(){
+  // convert any old "HH:MM" string entries (from a previous version) into {h,m} objects
+  Object.keys(state.entries).forEach(name => {
+    const days = state.entries[name];
+    DAYS.forEach(d => {
+      const entry = days[d.key];
+      if(!entry){ days[d.key] = {in:{h:'',m:''}, out:{h:'',m:''}}; return; }
+      ['in','out'].forEach(field => {
+        const v = entry[field];
+        if(typeof v === 'string'){
+          const [h,m] = v ? v.split(':') : ['',''];
+          entry[field] = {h: h||'', m: m||''};
+        } else if(!v || typeof v !== 'object'){
+          entry[field] = {h:'', m:''};
+        }
+      });
+    });
+  });
+}
+
 async function saveState(){
-  try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
-  }catch(e){
-    console.error('Could not save', e);
+  const statusEl = document.getElementById('saveStatus');
+  if(statusEl){ statusEl.textContent = 'Saving…'; statusEl.className = 'save-status saving'; }
+  const payload = JSON.stringify(state);
+  let lastErr = null;
+  for(let attempt=1; attempt<=3; attempt++){
+    try{
+      await window.storage.set(STORAGE_KEY, payload, false);
+      if(statusEl){ statusEl.textContent = 'Saved'; statusEl.className = 'save-status ok'; }
+      return;
+    }catch(e){
+      lastErr = e;
+      await new Promise(r => setTimeout(r, attempt * 500)); // brief backoff before retry
+    }
   }
+  console.error('Could not save after retries', lastErr);
+  if(statusEl){ statusEl.textContent = 'Not saved — check connection'; statusEl.className = 'save-status error'; }
 }
 
 function addStaff(name){
@@ -384,9 +464,10 @@ function removeStaff(name){
   render();
 }
 
-function updateEntry(name, dayKey, field, value){
+function updateEntry(name, dayKey, field, part, value){
   if(!state.entries[name]) state.entries[name] = emptyDays();
-  state.entries[name][dayKey][field] = value;
+  if(!state.entries[name][dayKey]) state.entries[name][dayKey] = {in:{h:'',m:''}, out:{h:'',m:''}};
+  state.entries[name][dayKey][field][part] = value;
   saveState();
   render();
 }
@@ -401,6 +482,37 @@ function setWeekRange(){
   const el = document.getElementById('weekRange');
   const today = new Date();
   el.textContent = today.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+}
+
+// Hours realistically covered by a shift: 4 PM through 3 AM (as 24h values)
+const HOUR_OPTIONS = [16,17,18,19,20,21,22,23,0,1,2,3];
+function hourLabel(h24){
+  const period = h24 < 12 ? 'AM' : 'PM';
+  let h12 = h24 % 12;
+  if(h12 === 0) h12 = 12;
+  return `${h12} ${period}`;
+}
+
+function timeSelectGroup(name, dayKey, field, value){
+  const vh = (value && value.h) || '';
+  const vm = (value && value.m) || '';
+  let hourOpts = `<option value="">--</option>`;
+  HOUR_OPTIONS.forEach(h => {
+    const hs = String(h).padStart(2,'0');
+    hourOpts += `<option value="${hs}" ${vh===hs?'selected':''}>${hourLabel(h)}</option>`;
+  });
+  let minOpts = `<option value="">--</option>`;
+  for(let m=0; m<60; m+=5){
+    const ms = String(m).padStart(2,'0');
+    minOpts += `<option value="${ms}" ${vm===ms?'selected':''}>${ms}</option>`;
+  }
+  return `
+    <div class="time-select-group">
+      <select class="tsel" data-name="${escapeHtml(name)}" data-day="${dayKey}" data-field="${field}" data-part="h">${hourOpts}</select>
+      <span class="tsel-colon">:</span>
+      <select class="tsel" data-name="${escapeHtml(name)}" data-day="${dayKey}" data-field="${field}" data-part="m">${minOpts}</select>
+    </div>
+  `;
 }
 
 function render(){
@@ -441,11 +553,15 @@ function render(){
       cell.innerHTML = `
         <div class="day-label"><span>${day.label}</span><span class="day-sched">${day.sched}</span></div>
         <div class="time-row">
-          <input type="time" value="${entry.in}" data-name="${escapeHtml(name)}" data-day="${day.key}" data-field="in">
-          <input type="time" value="${entry.out}" data-name="${escapeHtml(name)}" data-day="${day.key}" data-field="out">
+          <span class="time-io-label">In</span>
+          ${timeSelectGroup(name, day.key, 'in', entry.in)}
+        </div>
+        <div class="time-row">
+          <span class="time-io-label">Out</span>
+          ${timeSelectGroup(name, day.key, 'out', entry.out)}
         </div>
         <div class="day-result">
-          ${result.worked ? `<b>${result.hours}h</b> → ${fmt(result.pay)} OMR` : '<span class="day-off">Off</span>'}
+          ${result.worked ? `<b>${result.hours}h</b> → ${fmt(result.pay)} OMR${result.cutLate ? ` <span class="late-tag">· ${result.cutLate}m late, cut</span>` : ''}` : '<span class="day-off">Off</span>'}
         </div>
       `;
       grid.appendChild(cell);
@@ -476,9 +592,10 @@ function render(){
   document.getElementById('receiptGrandTotal').textContent = `${fmtHours(grandHours)}h · ${fmt(grand)}`;
 
   // wire up events
-  document.querySelectorAll('input[type=time]').forEach(inp => {
-    inp.addEventListener('change', e => {
-      updateEntry(e.target.dataset.name, e.target.dataset.day, e.target.dataset.field, e.target.value);
+  document.querySelectorAll('select.tsel').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const {name, day, field, part} = e.target.dataset;
+      updateEntry(name, day, field, part, e.target.value);
     });
   });
   document.querySelectorAll('[data-remove]').forEach(btn => {
