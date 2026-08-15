@@ -1,376 +1,580 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAT — Weekly Wage Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
-.app{background:#111;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:150px;}
-.header{background:#000;padding:20px 16px 14px;text-align:center;border-bottom:0.5px solid #1e1e1e;}
-.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
-.logo{font-size:26px;font-weight:600;letter-spacing:5px;color:#fff;}
-.order-badge{background:#1a1a1a;color:#aaa;font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;border:0.5px solid #2a2a2a;}
-.header-sub{font-size:11px;color:#444;letter-spacing:0.5px;}
-.tabs{display:flex;background:#000;border-bottom:0.5px solid #1e1e1e;position:sticky;top:0;z-index:10;}
-.tab{flex:1;padding:13px 8px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:#555;border-bottom:2px solid transparent;transition:all 0.2s;}
-.tab.active{color:#fff;border-bottom:2px solid #fff;}
-.search-bar{padding:12px;background:#000;border-bottom:0.5px solid #1a1a1a;}
-.search-bar input{width:100%;padding:10px 16px;border-radius:22px;border:0.5px solid #2a2a2a;background:#141414;font-size:14px;color:#fff;outline:none;transition:border-color 0.2s;}
-.search-bar input:focus{border-color:#444;}
-.search-bar input::placeholder{color:#444;}
-.section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:#333;padding:18px 16px 7px;}
-.item-card{background:#161616;margin:0 12px 7px;border-radius:16px;border:0.5px solid #222;overflow:hidden;transition:border-color 0.2s,transform 0.15s;}
-.item-card.selected{border:1.5px solid #fff;}
-.item-card.entering{animation:slideIn 0.2s ease;}
-@keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-.item-row{display:flex;align-items:center;padding:14px 14px;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 0.1s;}
-.item-row:active{background:#1f1f1f;}
-.check-box{width:23px;height:23px;border-radius:7px;border:1.5px solid #2e2e2e;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.18s;}
-.check-box.on{background:#fff;border-color:#fff;}
-.check-box.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #111;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);}
-.item-name{font-size:14px;font-weight:500;color:#efefef;}
-.item-desc{font-size:11px;color:#444;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.item-price{font-size:13px;font-weight:500;color:#888;flex-shrink:0;}
-.item-controls{padding:0 14px 13px;display:flex;flex-direction:column;gap:9px;animation:slideIn 0.18s ease;}
-.controls-row{display:flex;align-items:center;gap:9px;}
-.qty-wrap{display:flex;align-items:center;gap:6px;background:#1e1e1e;border-radius:22px;padding:5px 11px;border:0.5px solid #2a2a2a;}
-.qty-btn{width:26px;height:26px;border-radius:50%;border:none;background:none;font-size:19px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;transition:transform 0.1s;}
-.qty-btn:active{transform:scale(0.85);}
-.qty-num{font-size:14px;font-weight:500;min-width:18px;text-align:center;color:#fff;}
-.note-input{flex:1;font-size:12px;padding:7px 12px;border-radius:22px;border:0.5px solid #2a2a2a;background:#1e1e1e;color:#fff;outline:none;transition:border-color 0.2s;}
-.note-input:focus{border-color:#444;}
-.note-input::placeholder{color:#444;}
-.option-row{display:flex;gap:7px;}
-.opt-btn{flex:1;padding:7px 6px;border-radius:10px;border:0.5px solid #2a2a2a;background:#1e1e1e;color:#888;font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all 0.15s;}
-.opt-btn.active{background:#fff;border-color:#fff;color:#111;}
-.opt-btn:active{transform:scale(0.97);}
-.vat-note{font-size:10px;color:#333;text-align:center;padding:6px 0 2px;}
-.plate-section{padding:12px;}
-.plate-card{background:#161616;border-radius:16px;border:0.5px solid #222;padding:15px;}
-.plate-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#444;margin-bottom:9px;}
-.plate-input{width:100%;font-size:22px;font-weight:500;text-align:center;padding:11px;border-radius:11px;border:1.5px solid #222;background:#1e1e1e;color:#fff;letter-spacing:3px;text-transform:uppercase;outline:none;transition:border-color 0.2s;}
-.plate-input:focus{border-color:#555;}
-.plate-input::placeholder{color:#2e2e2e;}
-.sticky-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#000;border-top:0.5px solid #1e1e1e;padding:12px 12px 16px;}
-.total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
-.total-label{font-size:12px;color:#444;}
-.total-right{text-align:right;}
-.total-amt{font-size:20px;font-weight:600;color:#fff;transition:all 0.2s;}
-.total-vat{font-size:10px;color:#333;margin-top:1px;}
-.btn-row{display:flex;gap:8px;}
-.btn-copy{flex:1;padding:15px;border-radius:13px;background:#fff;color:#111;border:none;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.3px;transition:transform 0.15s,background 0.15s;}
-.btn-copy:active{transform:scale(0.97);}
-.btn-copy:disabled{background:#1e1e1e;color:#333;cursor:default;}
-.btn-reset{padding:15px 16px;border-radius:13px;background:#161616;color:#555;border:0.5px solid #222;font-size:13px;cursor:pointer;transition:background 0.15s;}
-.btn-reset:active{background:#1f1f1f;}
-.toast{position:fixed;bottom:115px;left:50%;transform:translateX(-50%) translateY(10px);width:calc(100% - 24px);max-width:456px;background:#fff;color:#111;padding:12px 16px;border-radius:13px;text-align:center;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.22s,transform 0.22s;pointer-events:none;z-index:100;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.history-wrap{padding:12px;}
-.history-empty{text-align:center;padding:50px 20px;color:#333;font-size:14px;}
-.hist-card{background:#161616;border-radius:16px;border:0.5px solid #222;margin-bottom:10px;overflow:hidden;}
-.hist-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:0.5px solid #1e1e1e;}
-.hist-num{font-size:13px;font-weight:500;color:#efefef;}
-.hist-plate{font-size:12px;color:#555;font-weight:500;letter-spacing:1px;margin-left:8px;}
-.hist-time{font-size:11px;color:#333;}
-.hist-items{padding:10px 14px;}
-.hist-item-line{font-size:13px;color:#666;padding:3px 0;}
-.hist-footer{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#111;}
-.hist-total{font-size:13px;font-weight:500;color:#efefef;}
-.btn-repeat{font-size:12px;padding:7px 16px;border-radius:20px;background:#fff;color:#111;border:none;cursor:pointer;font-weight:600;transition:transform 0.1s;}
-.btn-repeat:active{transform:scale(0.95);}
-.no-results{text-align:center;padding:40px;color:#333;font-size:14px;}
-.selected-summary{padding:4px 16px 0;display:flex;gap:6px;flex-wrap:wrap;}
-.summary-pill{background:#1a1a1a;border:0.5px solid #2a2a2a;border-radius:20px;padding:4px 10px;font-size:11px;color:#888;white-space:nowrap;}
+  :root{
+    --bg: #17140f;
+    --surface: #221d16;
+    --surface-2: #2b2419;
+    --line: #3a3226;
+    --text: #f5efe3;
+    --text-muted: #9c9184;
+    --mustard: #d9a521;
+    --mustard-dim: #8a6c1f;
+    --ketchup: #c1432b;
+    --success: #6e9b5e;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(217,165,33,0.06), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    border-bottom:3px solid var(--mustard);
+    padding-bottom:18px;
+    margin-bottom:28px;
+  }
+  header .brand{display:flex;align-items:baseline;gap:14px;}
+  h1{
+    font-family:'Archivo Black', sans-serif;
+    font-size:clamp(32px,6vw,52px);
+    letter-spacing:1px;
+    margin:0;
+    color:var(--mustard);
+    text-transform:uppercase;
+  }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--text-muted);
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+  .sub{font-size:14px;color:var(--text-muted);}
+
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:22px;
+  }
+  .panel h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--mustard);
+    margin:0 0 14px;
+  }
+
+  /* add staff */
+  .add-row{display:flex;gap:8px;flex-wrap:wrap;}
+  input[type=text]{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:10px 12px;
+    border-radius:6px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    flex:1;
+    min-width:160px;
+  }
+  input[type=text]:focus, input[type=time]:focus{outline:2px solid var(--mustard);outline-offset:1px;}
+  button{
+    cursor:pointer;
+    border:none;
+    border-radius:6px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:10px 16px;
+    transition:transform .1s ease, opacity .15s ease;
+  }
+  button:active{transform:scale(0.97);}
+  .btn-primary{background:var(--mustard);color:#1c1712;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--line);}
+  .btn-ghost:hover{color:var(--text);border-color:var(--text-muted);}
+  .btn-danger{background:transparent;color:var(--ketchup);border:1px solid rgba(193,67,43,0.4);}
+  .btn-danger:hover{background:rgba(193,67,43,0.12);}
+
+  /* staff card */
+  .staff-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .staff-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+  }
+  .staff-name{
+    font-family:'Archivo Black',sans-serif;
+    font-size:18px;
+    color:var(--text);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .staff-total{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:18px;
+    color:var(--success);
+    font-weight:600;
+  }
+  .days-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px;
+    background:var(--line);
+  }
+  .day-cell{
+    background:var(--surface);
+    padding:12px 14px;
+  }
+  .day-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--mustard-dim);
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .day-sched{color:var(--text-muted);font-weight:400;}
+  .time-row{display:flex;gap:6px;margin-bottom:6px;}
+  input[type=time]{
+    background:var(--bg);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:5px;
+    padding:6px 6px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    width:100%;
+    color-scheme:dark;
+  }
+  .day-result{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:6px;
+  }
+  .day-result b{color:var(--text);}
+  .day-off{color:#5c5346;font-size:11px;font-style:italic;}
+
+  /* receipt */
+  .receipt-wrap{display:flex;justify-content:center;margin-top:36px;}
+  .receipt{
+    width:100%;
+    max-width:340px;
+    background:#f5efe3;
+    color:#1c1712;
+    font-family:'IBM Plex Mono',monospace;
+    padding:22px 20px 26px;
+    position:relative;
+    box-shadow:0 12px 30px rgba(0,0,0,0.4);
+  }
+  .receipt:before, .receipt:after{
+    content:"";
+    position:absolute;
+    left:0;right:0;height:10px;
+    background:
+      radial-gradient(circle at 8px 5px, var(--bg) 5px, transparent 6px) repeat-x;
+    background-size:16px 10px;
+  }
+  .receipt:before{top:-5px;}
+  .receipt:after{bottom:-5px;transform:rotate(180deg);}
+  .receipt h3{
+    font-family:'Archivo Black',sans-serif;
+    text-align:center;
+    margin:0 0 2px;
+    font-size:20px;
+    letter-spacing:1px;
+  }
+  .receipt .rline{
+    text-align:center;
+    font-size:10px;
+    color:#6b6255;
+    letter-spacing:1.5px;
+    margin-bottom:14px;
+  }
+  .receipt .dashed{border-top:1px dashed #b8ac97;margin:10px 0;}
+  .receipt-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;}
+  .receipt-row.total{font-weight:700;font-size:15px;margin-top:6px;}
+  .receipt-footer{text-align:center;font-size:10px;color:#6b6255;margin-top:14px;letter-spacing:1px;}
+
+  .empty{color:var(--text-muted);font-size:14px;padding:8px 2px;}
+  .actions-row{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap;}
+  .note{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
+
+  .copy-row{display:flex;justify-content:center;margin-top:16px;}
+  #copyBtn{width:100%;max-width:340px;text-align:center;padding:13px 16px;font-size:14px;}
+
+  @media (max-width: 480px){
+    body{padding:20px 10px 70px;}
+    header{flex-direction:column;align-items:flex-start;gap:4px;}
+    h1{font-size:34px;}
+    .panel{padding:14px 14px;}
+    .add-row{flex-direction:column;}
+    .add-row button{width:100%;}
+    .days-grid{grid-template-columns:1fr;}
+    .staff-head{flex-wrap:wrap;gap:8px;}
+    .staff-head > div{width:100%;justify-content:space-between;}
+    .actions-row{justify-content:stretch;}
+    .actions-row button{flex:1;}
+    .receipt{max-width:100%;}
+  }
 </style>
+</head>
+<body>
+<div class="wrap">
 
-<div class="app">
-<div class="header">
-  <div class="header-top">
-    <div style="width:64px;"></div>
-    <div class="logo">FLAT</div>
-    <div class="order-badge" id="order-counter">Order #1</div>
-  </div>
-  <div class="header-sub">Drive-thru order system</div>
-</div>
+  <header>
+    <div class="brand">
+      <h1>Flat</h1>
+      <span class="tag">Weekly&nbsp;Wage&nbsp;Board</span>
+    </div>
+    <div class="sub" id="weekRange"></div>
+  </header>
 
-<div class="tabs">
-  <div class="tab active" id="tab-menu" onclick="switchTab('menu')">Menu</div>
-  <div class="tab" id="tab-history" onclick="switchTab('history')">
-    History <span id="hist-count" style="display:none;background:#fff;color:#111;border-radius:10px;font-size:10px;padding:1px 7px;margin-left:4px;font-weight:600;"></span>
+  <div class="panel">
+    <h2>Staff Roster</h2>
+    <div class="add-row">
+      <input type="text" id="newStaffName" placeholder="Waiter name">
+      <button class="btn-primary" id="addStaffBtn">+ Add Waiter</button>
+    </div>
+    <div class="note">Rate: 1.000 OMR per hour worked, plus 1.000 OMR for each day worked. Overtime pays the same rate — just enter the real clock-in / clock-out time and it's handled automatically.</div>
   </div>
-</div>
 
-<div id="panel-menu">
-  <div class="search-bar">
-    <input type="search" id="search" placeholder="Search menu..." oninput="renderMenu()" />
+  <div id="staffList"></div>
+  <div id="emptyState" class="empty" style="display:none;">No waiters added yet. Add one above to start entering hours.</div>
+
+  <div class="actions-row">
+    <button class="btn-ghost" id="resetWeekBtn">Reset week (keep staff)</button>
   </div>
-  <div id="selected-summary" class="selected-summary"></div>
-  <div id="menu-list"></div>
-  <div class="vat-note">All prices include 5% VAT</div>
-  <div class="plate-section">
-    <div class="plate-card">
-      <div class="plate-lbl">License plate</div>
-      <input class="plate-input" id="plate" type="text" placeholder="A 12345" maxlength="12" oninput="this.value=this.value.toUpperCase();updateBar()" />
+
+  <div class="receipt-wrap">
+    <div class="receipt">
+      <h3>FLAT</h3>
+      <div class="rline">WEEKLY WAGE RECEIPT</div>
+      <div class="dashed"></div>
+      <div id="receiptLines"></div>
+      <div class="dashed"></div>
+      <div class="receipt-row total"><span>TOTAL PAYOUT</span><span id="receiptGrandTotal">0.000</span></div>
+      <div class="receipt-footer">FLAT · MUSCAT · THANK YOU</div>
     </div>
   </div>
-</div>
 
-<div id="panel-history" style="display:none;">
-  <div class="history-wrap" id="history-list"></div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<div class="sticky-bar" id="sticky-bar">
-  <div class="total-row">
-    <span class="total-label">Order total</span>
-    <div class="total-right">
-      <div class="total-amt" id="total-display">0.000 OMR</div>
-      <div class="total-vat" id="vat-display">incl. 0.000 OMR VAT</div>
-    </div>
+  <div class="copy-row">
+    <button class="btn-primary" id="copyBtn">📋 Copy for WhatsApp</button>
   </div>
-  <div class="btn-row">
-    <button class="btn-copy" id="copyBtn" onclick="copyOrder()" disabled>Copy for WhatsApp</button>
-    <button class="btn-reset" onclick="resetAll()">Reset</button>
-  </div>
-</div>
+
 </div>
 
 <script>
-const VAT=0.05;
-const BURGER_IDS=["uncle_sam","pats","truff","honey","crunch","blazing","bacon","fh_single","fh_double"];
-
-const MENU=[
-  {section:"Burgers"},
-  {id:"uncle_sam",name:"Uncle Sam",desc:"Angus beef, cheese, signature sauce, sesame brioche",price:1.600,type:"burger"},
-  {id:"pats",name:"Pat's Cheeseburger",desc:"Angus beef, cheese, onions, pickles, ketchup & mustard",price:1.600,type:"burger"},
-  {id:"truff",name:"Truff",desc:"Angus beef, truffle sauce, melted cheese, sesame brioche",price:2.400,type:"burger"},
-  {id:"honey",name:"Honey",desc:"Angus beef, honey, melted cheese, sesame brioche",price:1.800,type:"burger"},
-  {id:"crunch",name:"Crunch",desc:"Al Safa fried chicken, house sauce and cheese",price:1.600,type:"burger"},
-  {id:"blazing",name:"Blazing Bird",desc:"Al Safa fried chicken, spicy sauce and cheese",price:1.800,type:"burger"},
-  {id:"bacon",name:"Bacon Cheeseburger",desc:"Angus beef, cheese, caramelized onions, beef bacon, special sauce",price:2.200,type:"burger"},
-  {id:"fh_single",name:"Full House — Single",desc:"Smashed patty, lettuce, tomato, onions, cheese, house sauce",price:2.000,type:"burger"},
-  {id:"fh_double",name:"Full House — Double",desc:"2 smashed patties, lettuce, tomato, onions, cheese, house sauce",price:2.400,type:"burger"},
-  {section:"Mac & Cheese"},
-  {id:"classic_mac",name:"Classic Mac & Cheese",desc:"Creamy macaroni and cheese",price:1.400},
-  {id:"truff_mac",name:"Truffle Mac & Cheese",desc:"Truffle-infused creamy macaroni and cheese",price:1.600},
-  {section:"Sides"},
-  {id:"norm_fries",name:"Normal Fries",desc:"Golden, crispy fries",price:0.800},
-  {id:"spicy_fries",name:"Spicy Fries",desc:"Fries with spicy seasoning",price:0.900},
-  {id:"strips",name:"Chicken Strips",desc:"3 strips or 5 strips",price:1.400,type:"strips"},
-  {id:"nuggets",name:"Chicken Nuggets",desc:"",price:1.500},
-  {id:"sliders",name:"Sliders Box",desc:"Mini Uncle Sams — smashed beef, cheese, signature sauce",price:9.900},
-  {section:"Drinks"},
-  {id:"water",name:"Water",desc:"",price:0.200},
-  {id:"soda",name:"Soda",desc:"",price:0.400},
-  {section:"Extras"},
-  {id:"beef_extra",name:"Beef Patty",desc:"Extra beef patty",price:0.400},
-  {id:"jalapeno",name:"Jalapeño",desc:"",price:0.100},
-  {id:"pickle",name:"Pickle",desc:"",price:0.100},
-  {id:"cheese_slice",name:"Cheese Slice",desc:"",price:0.100},
-  {id:"blazing_sauce",name:"Blazing Bird Sauce",desc:"",price:0.200},
-  {id:"honey_sauce",name:"Honey Sauce",desc:"",price:0.300},
+const DAYS = [
+  {key:'Sun', label:'Sun', sched:'6PM–11PM (5h)'},
+  {key:'Mon', label:'Mon', sched:'6PM–11PM (5h)'},
+  {key:'Tue', label:'Tue', sched:'6PM–11PM (5h)'},
+  {key:'Wed', label:'Wed', sched:'6PM–11PM (5h)'},
+  {key:'Thu', label:'Thu', sched:'6PM–1AM (7h)'},
+  {key:'Fri', label:'Fri', sched:'6PM–1AM (7h)'},
+  {key:'Sat', label:'Sat', sched:'6PM–1AM (7h)'},
 ];
+const STORAGE_KEY = 'flat-week-data';
 
-const items=MENU.filter(i=>!i.section);
-const state={};
-items.forEach(i=>{
-  state[i.id]={checked:false,qty:1,note:"",patty:"single",strips:3};
-});
-let orderNum=1,history=[];
+let state = { waiters: [], entries: {} }; // entries[name][dayKey] = {in:'HH:MM', out:'HH:MM'}
 
-function itemBasePrice(item){
-  const s=state[item.id];
-  if(item.type==="burger") return item.price+(s.patty==="double"?0.400:0);
-  if(item.type==="strips") return s.strips===5?1.800:1.400;
-  return item.price;
+function emptyDays(){
+  const d = {};
+  DAYS.forEach(day => d[day.key] = {in:'', out:''});
+  return d;
 }
 
-function withVAT(p){return p*(1+VAT);}
-
-function getTotal(){
-  return items.filter(i=>state[i.id].checked).reduce((s,i)=>s+withVAT(itemBasePrice(i))*state[i.id].qty,0);
+function calcDay(entry){
+  if(!entry || !entry.in || !entry.out) return {hours:0, pay:0, worked:false};
+  const [inH,inM] = entry.in.split(':').map(Number);
+  const [outH,outM] = entry.out.split(':').map(Number);
+  let start = inH*60 + inM;
+  let end = outH*60 + outM;
+  if(end <= start) end += 24*60; // crossed midnight
+  let diffHours = (end - start) / 60;
+  // round to nearest half hour
+  diffHours = Math.round(diffHours * 2) / 2;
+  if(diffHours <= 0) return {hours:0, pay:0, worked:false};
+  const pay = diffHours * 1 + 1; // 1 OMR/hour + 1 OMR/day worked
+  return {hours:diffHours, pay:pay, worked:true};
 }
 
-function updateBar(){
-  const total=getTotal();
-  const vat=total-(total/(1+VAT));
-  document.getElementById("total-display").textContent=total.toFixed(3)+" OMR";
-  document.getElementById("vat-display").textContent="incl. "+vat.toFixed(3)+" OMR VAT";
-  document.getElementById("copyBtn").disabled=items.filter(i=>state[i.id].checked).length===0;
-  renderSummary();
+function calcWaiterTotal(name){
+  const days = state.entries[name] || {};
+  let total = 0;
+  DAYS.forEach(d => { total += calcDay(days[d.key]).pay; });
+  return total;
 }
 
-function renderSummary(){
-  const sel=items.filter(i=>state[i.id].checked);
-  const el=document.getElementById("selected-summary");
-  if(!sel.length){el.innerHTML="";return;}
-  el.innerHTML=sel.map(i=>{
-    const s=state[i.id];
-    let label=`${s.qty}x ${i.name}`;
-    if(i.type==="burger"&&s.patty==="double") label+=" (dbl)";
-    if(i.type==="strips") label+=` (${s.strips}pc)`;
-    return `<div class="summary-pill">${label}</div>`;
-  }).join("");
+function calcWaiterHours(name){
+  const days = state.entries[name] || {};
+  let hours = 0;
+  DAYS.forEach(d => { hours += calcDay(days[d.key]).hours; });
+  return hours;
 }
 
-function renderMenu(){
-  const q=(document.getElementById("search").value||"").toLowerCase().trim();
-  let html="",lastSection="",sectionHasItems=false,sectionBuffer="";
-  MENU.forEach(item=>{
-    if(item.section){
-      if(sectionHasItems) html+=`<div class="section-label">${lastSection}</div>`+sectionBuffer;
-      lastSection=item.section;sectionBuffer="";sectionHasItems=false;return;
+function fmtHours(h){
+  // trims trailing .0 e.g. 22h instead of 22.0h, keeps 22.5h
+  return (h % 1 === 0) ? h.toString() : h.toFixed(1);
+}
+
+function fmt(n){ return n.toFixed(3); }
+
+async function loadState(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){
+      const parsed = JSON.parse(res.value);
+      state.waiters = parsed.waiters || [];
+      state.entries = parsed.entries || {};
     }
-    if(q&&!item.name.toLowerCase().includes(q)&&!(item.desc||"").toLowerCase().includes(q)) return;
-    sectionHasItems=true;
-    const s=state[item.id];
-    const bp=itemBasePrice(item);
-    const vp=withVAT(bp);
-    sectionBuffer+=`<div class="item-card${s.checked?" selected":""}" id="card-${item.id}">
-      <div class="item-row" onclick="toggleItem('${item.id}')">
-        <div class="check-box${s.checked?" on":""}"></div>
-        <div style="flex:1;min-width:0;">
-          <div class="item-name">${item.name}</div>
-          ${item.desc?`<div class="item-desc">${item.desc}</div>`:""}
+  }catch(e){
+    // no saved data yet, start fresh
+  }
+  render();
+}
+
+async function saveState(){
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+  }catch(e){
+    console.error('Could not save', e);
+  }
+}
+
+function addStaff(name){
+  name = name.trim();
+  if(!name) return;
+  if(state.waiters.includes(name)) return;
+  state.waiters.push(name);
+  state.entries[name] = emptyDays();
+  saveState();
+  render();
+}
+
+function removeStaff(name){
+  state.waiters = state.waiters.filter(w => w !== name);
+  delete state.entries[name];
+  saveState();
+  render();
+}
+
+function updateEntry(name, dayKey, field, value){
+  if(!state.entries[name]) state.entries[name] = emptyDays();
+  state.entries[name][dayKey][field] = value;
+  saveState();
+  render();
+}
+
+function resetWeek(){
+  state.waiters.forEach(name => state.entries[name] = emptyDays());
+  saveState();
+  render();
+}
+
+function setWeekRange(){
+  const el = document.getElementById('weekRange');
+  const today = new Date();
+  el.textContent = today.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+}
+
+function render(){
+  const listEl = document.getElementById('staffList');
+  const emptyEl = document.getElementById('emptyState');
+  listEl.innerHTML = '';
+
+  if(state.waiters.length === 0){
+    emptyEl.style.display = 'block';
+  } else {
+    emptyEl.style.display = 'none';
+  }
+
+  state.waiters.forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'staff-card';
+
+    const head = document.createElement('div');
+    head.className = 'staff-head';
+    const total = calcWaiterTotal(name);
+    head.innerHTML = `
+      <span class="staff-name">${escapeHtml(name)}</span>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span class="staff-total">${fmt(total)} OMR</span>
+        <button class="btn-danger" data-remove="${escapeHtml(name)}">Remove</button>
+      </div>
+    `;
+    card.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'days-grid';
+
+    DAYS.forEach(day => {
+      const entry = (state.entries[name] && state.entries[name][day.key]) || {in:'',out:''};
+      const result = calcDay(entry);
+      const cell = document.createElement('div');
+      cell.className = 'day-cell';
+      cell.innerHTML = `
+        <div class="day-label"><span>${day.label}</span><span class="day-sched">${day.sched}</span></div>
+        <div class="time-row">
+          <input type="time" value="${entry.in}" data-name="${escapeHtml(name)}" data-day="${day.key}" data-field="in">
+          <input type="time" value="${entry.out}" data-name="${escapeHtml(name)}" data-day="${day.key}" data-field="out">
         </div>
-        <div class="item-price">${vp.toFixed(3)}</div>
-      </div>
-      ${s.checked?`<div class="item-controls entering">
-        ${item.type==="burger"?`<div class="option-row">
-          <div class="opt-btn${s.patty==="single"?" active":""}" onclick="event.stopPropagation();setPatty('${item.id}','single')">Single patty</div>
-          <div class="opt-btn${s.patty==="double"?" active":""}" onclick="event.stopPropagation();setPatty('${item.id}','double')">Double patty +0.420</div>
-        </div>`:""}
-        ${item.type==="strips"?`<div class="option-row">
-          <div class="opt-btn${s.strips===3?" active":""}" onclick="event.stopPropagation();setStrips('${item.id}',3)">3 strips — 1.470</div>
-          <div class="opt-btn${s.strips===5?" active":""}" onclick="event.stopPropagation();setStrips('${item.id}',5)">5 strips — 1.890</div>
-        </div>`:""}
-        <div class="controls-row">
-          <div class="qty-wrap">
-            <button class="qty-btn" onclick="event.stopPropagation();changeQty('${item.id}',-1)">−</button>
-            <span class="qty-num">${s.qty}</span>
-            <button class="qty-btn" onclick="event.stopPropagation();changeQty('${item.id}',1)">+</button>
-          </div>
-          <input class="note-input" type="text" placeholder="Note (e.g. no onions)" value="${s.note.replace(/"/g,'&quot;')}" oninput="state['${item.id}'].note=this.value" onclick="event.stopPropagation()" />
+        <div class="day-result">
+          ${result.worked ? `<b>${result.hours}h</b> → ${fmt(result.pay)} OMR` : '<span class="day-off">Off</span>'}
         </div>
-      </div>`:""}
-    </div>`;
+      `;
+      grid.appendChild(cell);
+    });
+
+    card.appendChild(grid);
+    listEl.appendChild(card);
   });
-  if(sectionHasItems) html+=`<div class="section-label">${lastSection}</div>`+sectionBuffer;
-  if(q&&!html) html=`<div class="no-results">No items found for "${q}"</div>`;
-  document.getElementById("menu-list").innerHTML=html;
-  updateBar();
-}
 
-function toggleItem(id){
-  state[id].checked=!state[id].checked;
-  renderMenu();
-}
-function changeQty(id,d){state[id].qty=Math.max(1,state[id].qty+d);renderMenu();}
-function setPatty(id,v){state[id].patty=v;renderMenu();}
-function setStrips(id,v){state[id].strips=v;renderMenu();}
-
-function copyOrder(){
-  const plate=document.getElementById("plate").value.trim().toUpperCase();
-  const sel=items.filter(i=>state[i.id].checked);
-  if(!sel.length){showToast("No items selected!");return;}
-  const num=orderNum;
-  let lines=[`*ORDER #${num}*`];
-  if(plate) lines.push(`Plate: *${plate}*`);
-  lines.push("");
-  let lastSec="";
-  MENU.forEach(item=>{
-    if(item.section){lastSec=item.section;return;}
-    if(!state[item.id].checked) return;
-    const s=state[item.id];
-    if(lines[lines.length-1]!==`*${lastSec}*`) lines.push(`*${lastSec}*`);
-    const bp=itemBasePrice(item);
-    const vp=withVAT(bp);
-    let label=item.name;
-    if(item.type==="burger") label+=s.patty==="double"?" (double patty)":" (single patty)";
-    if(item.type==="strips") label+=` (${s.strips} strips)`;
-    let line=`• ${s.qty}x ${label} — ${(vp*s.qty).toFixed(3)} OMR`;
-    if(s.note) line+=`\n  _(${s.note})_`;
-    lines.push(line);
+  // receipt
+  const receiptLines = document.getElementById('receiptLines');
+  receiptLines.innerHTML = '';
+  let grand = 0;
+  let grandHours = 0;
+  state.waiters.forEach(name => {
+    const total = calcWaiterTotal(name);
+    const hours = calcWaiterHours(name);
+    grand += total;
+    grandHours += hours;
+    const row = document.createElement('div');
+    row.className = 'receipt-row';
+    row.innerHTML = `<span>${escapeHtml(name)}</span><span>${fmtHours(hours)}h · ${fmt(total)}</span>`;
+    receiptLines.appendChild(row);
   });
-  const total=getTotal();
-  const vat=total-(total/(1+VAT));
-  lines.push("");
-  lines.push(`Subtotal: ${(total/(1+VAT)).toFixed(3)} OMR`);
-  lines.push(`VAT (5%): ${vat.toFixed(3)} OMR`);
-  lines.push(`*Total: ${total.toFixed(3)} OMR*`);
-  const text=lines.join("\n");
-  history.unshift({num,plate,time:new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}),total:total.toFixed(3),items:sel.map(i=>({id:i.id,name:i.name,qty:state[i.id].qty,note:state[i.id].note,patty:state[i.id].patty,strips:state[i.id].strips,type:i.type}))});
-  orderNum++;
-  document.getElementById("order-counter").textContent="Order #"+orderNum;
-  updateHistCount();
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(()=>showToast("Copied! Paste in WhatsApp")).catch(()=>fallbackCopy(text));
-  } else fallbackCopy(text);
-}
+  if(state.waiters.length === 0){
+    receiptLines.innerHTML = '<div class="receipt-row"><span>—</span><span>0.000</span></div>';
+  }
+  document.getElementById('receiptGrandTotal').textContent = `${fmtHours(grandHours)}h · ${fmt(grand)}`;
 
-function fallbackCopy(t){
-  const ta=document.createElement("textarea");ta.value=t;ta.style.position="absolute";ta.style.left="-9999px";
-  document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
-  showToast("Copied! Paste in WhatsApp");
-}
-
-function resetAll(){
-  items.forEach(i=>{state[i.id]={checked:false,qty:1,note:"",patty:"single",strips:3};});
-  document.getElementById("plate").value="";
-  document.getElementById("search").value="";
-  renderMenu();
-}
-
-function showToast(msg){
-  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2500);
-}
-
-function switchTab(tab){
-  document.getElementById("tab-menu").classList.toggle("active",tab==="menu");
-  document.getElementById("tab-history").classList.toggle("active",tab==="history");
-  document.getElementById("panel-menu").style.display=tab==="menu"?"":"none";
-  document.getElementById("panel-history").style.display=tab==="history"?"":"none";
-  document.getElementById("sticky-bar").style.display=tab==="menu"?"":"none";
-  if(tab==="history") renderHistory();
-}
-
-function updateHistCount(){
-  const el=document.getElementById("hist-count");
-  if(history.length>0){el.style.display="";el.textContent=history.length;}else el.style.display="none";
-}
-
-function renderHistory(){
-  const container=document.getElementById("history-list");
-  if(!history.length){container.innerHTML=`<div class="history-empty">No orders yet this session.</div>`;return;}
-  container.innerHTML=history.map(h=>`
-    <div class="hist-card">
-      <div class="hist-header">
-        <div><span class="hist-num">Order #${h.num}</span>${h.plate?`<span class="hist-plate">${h.plate}</span>`:""}</div>
-        <div class="hist-time">${h.time}</div>
-      </div>
-      <div class="hist-items">${h.items.map(i=>{
-        let extra="";
-        if(i.type==="burger") extra=i.patty==="double"?" · double patty":"";
-        if(i.type==="strips") extra=` · ${i.strips} strips`;
-        return `<div class="hist-item-line">${i.qty}x ${i.name}${extra}${i.note?` <span style="color:#333;font-size:11px;">(${i.note})</span>`:""}</div>`;
-      }).join("")}</div>
-      <div class="hist-footer">
-        <span class="hist-total">${h.total} OMR</span>
-        <button class="btn-repeat" onclick="repeatOrder(${h.num})">Repeat</button>
-      </div>
-    </div>`).join("");
-}
-
-function repeatOrder(num){
-  const h=history.find(x=>x.num===num);if(!h)return;
-  resetAll();
-  h.items.forEach(i=>{
-    if(state[i.id]){state[i.id].checked=true;state[i.id].qty=i.qty;state[i.id].note=i.note;
-    if(i.patty) state[i.id].patty=i.patty;
-    if(i.strips) state[i.id].strips=i.strips;}
+  // wire up events
+  document.querySelectorAll('input[type=time]').forEach(inp => {
+    inp.addEventListener('change', e => {
+      updateEntry(e.target.dataset.name, e.target.dataset.day, e.target.dataset.field, e.target.value);
+    });
   });
-  if(h.plate) document.getElementById("plate").value=h.plate;
-  switchTab("menu");renderMenu();showToast("Order #"+num+" loaded!");
+  document.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', e => removeStaff(e.target.dataset.remove));
+  });
 }
 
-renderMenu();
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+document.getElementById('addStaffBtn').addEventListener('click', () => {
+  const input = document.getElementById('newStaffName');
+  addStaff(input.value);
+  input.value = '';
+});
+document.getElementById('newStaffName').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){
+    addStaff(e.target.value);
+    e.target.value = '';
+  }
+});
+function buildWhatsAppText(){
+  const today = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+  let lines = [];
+  lines.push(`*FLAT — Weekly Wages*`);
+  lines.push(today);
+  lines.push('');
+
+  let grand = 0, grandHours = 0;
+
+  state.waiters.forEach(name => {
+    const days = state.entries[name] || {};
+    let dayParts = [];
+    DAYS.forEach(d => {
+      const r = calcDay(days[d.key]);
+      dayParts.push(r.worked ? `${d.label} ${fmtHours(r.hours)}h` : `${d.label} off`);
+    });
+    const total = calcWaiterTotal(name);
+    const hours = calcWaiterHours(name);
+    grand += total;
+    grandHours += hours;
+
+    lines.push(`*${name}*`);
+    lines.push(dayParts.join('  '));
+    lines.push(`Total: ${fmtHours(hours)}h → ${fmt(total)} OMR`);
+    lines.push('');
+  });
+
+  lines.push(`------------------------`);
+  lines.push(`*GRAND TOTAL: ${fmtHours(grandHours)}h → ${fmt(grand)} OMR*`);
+
+  return lines.join('\n');
+}
+
+async function copyForWhatsApp(){
+  const text = buildWhatsAppText();
+  const btn = document.getElementById('copyBtn');
+  try{
+    await navigator.clipboard.writeText(text);
+    const original = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = original, 1800);
+  }catch(e){
+    // fallback for older mobile browsers
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try{
+      document.execCommand('copy');
+      const original = btn.textContent;
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = original, 1800);
+    }catch(err){
+      alert('Could not copy automatically — please select and copy the text manually.');
+    }
+    document.body.removeChild(ta);
+  }
+}
+
+document.getElementById('copyBtn').addEventListener('click', copyForWhatsApp);
+
+document.getElementById('resetWeekBtn').addEventListener('click', () => {
+  if(confirm('Clear all entered hours for this week? Staff names will stay.')){
+    resetWeek();
+  }
+});
+
+setWeekRange();
+loadState();
 </script>
+</body>
+</html>
