@@ -40,7 +40,7 @@
     gap:12px;
     border-bottom:3px solid var(--mustard);
     padding-bottom:18px;
-    margin-bottom:28px;
+    margin-bottom:10px;
   }
   header .brand{display:flex;align-items:baseline;gap:14px;}
   h1{
@@ -63,7 +63,7 @@
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
     letter-spacing:0.5px;
-    margin:6px 0 20px;
+    margin:6px 0 22px;
     min-height:14px;
   }
   .save-status.saving{color:var(--text-muted);}
@@ -74,33 +74,11 @@
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:10px;
-    padding:18px 20px;
+    padding:16px 18px;
     margin-bottom:22px;
   }
-  .panel h2{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:15px;
-    text-transform:uppercase;
-    letter-spacing:1.5px;
-    color:var(--mustard);
-    margin:0 0 14px;
-  }
+  .note{font-size:12px;color:var(--text-muted);line-height:1.5;}
 
-  /* add staff */
-  .add-row{display:flex;gap:8px;flex-wrap:wrap;}
-  input[type=text]{
-    background:var(--surface-2);
-    border:1px solid var(--line);
-    color:var(--text);
-    padding:10px 12px;
-    border-radius:6px;
-    font-family:'Space Grotesk',sans-serif;
-    font-size:14px;
-    flex:1;
-    min-width:160px;
-  }
-  input[type=text]:focus, input[type=time]:focus{outline:2px solid var(--mustard);outline-offset:1px;}
   button{
     cursor:pointer;
     border:none;
@@ -116,68 +94,69 @@
   .btn-primary:hover{opacity:.9;}
   .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--line);}
   .btn-ghost:hover{color:var(--text);border-color:var(--text-muted);}
-  .btn-danger{background:transparent;color:var(--ketchup);border:1px solid rgba(193,67,43,0.4);}
+  .btn-danger{background:transparent;color:var(--ketchup);border:1px solid rgba(193,67,43,0.4);padding:8px 10px;font-size:16px;line-height:1;}
   .btn-danger:hover{background:rgba(193,67,43,0.12);}
+  .btn-add{background:var(--surface-2);color:var(--mustard);border:1px dashed var(--mustard-dim);width:100%;padding:12px;margin-top:4px;}
+  .btn-add:hover{background:rgba(217,165,33,0.08);}
 
-  /* staff card */
-  .staff-card{
+  /* day card */
+  .day-card{
     background:var(--surface);
     border:1px solid var(--line);
     border-radius:10px;
     margin-bottom:16px;
     overflow:hidden;
   }
-  .staff-head{
+  .day-head{
     display:flex;
-    align-items:center;
+    align-items:baseline;
     justify-content:space-between;
     padding:14px 18px;
     background:var(--surface-2);
     border-bottom:1px solid var(--line);
   }
-  .staff-name{
+  .day-name{
     font-family:'Archivo Black',sans-serif;
     font-size:18px;
     color:var(--text);
     text-transform:uppercase;
     letter-spacing:0.5px;
   }
-  .staff-total{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:18px;
-    color:var(--success);
-    font-weight:600;
-  }
-  .days-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:1px;
-    background:var(--line);
-  }
-  .day-cell{
-    background:var(--surface);
-    padding:12px 14px;
-  }
-  .day-label{
+  .day-sched{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:1.5px;
-    color:var(--mustard-dim);
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:8px;
+    color:var(--text-muted);
   }
-  .day-sched{color:var(--text-muted);font-weight:400;}
-  .time-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+  .day-body{padding:14px 18px;}
+  .entry-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .entry-row:last-of-type{border-bottom:none;}
+  .entry-name{
+    background:var(--bg);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:9px 10px;
+    border-radius:5px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    flex:1 1 130px;
+    min-width:110px;
+  }
+  .entry-name:focus{outline:2px solid var(--mustard);outline-offset:1px;}
+  .entry-times{display:flex;align-items:center;gap:6px;flex:2 1 220px;}
   .time-io-label{
     font-family:'IBM Plex Mono',monospace;
     font-size:10px;
     color:var(--text-muted);
-    width:26px;
     flex-shrink:0;
   }
-  .time-select-group{display:flex;align-items:center;gap:4px;flex:1;}
+  .time-select-group{display:flex;align-items:center;gap:3px;flex:1;}
   .time-select-group select.tsel:first-child{flex:1.3;}
   .time-select-group select.tsel:last-child{flex:1;}
   select.tsel{
@@ -185,26 +164,27 @@
     border:1px solid var(--line);
     color:var(--text);
     border-radius:5px;
-    padding:9px 4px;
+    padding:8px 3px;
     font-family:'IBM Plex Mono',monospace;
-    font-size:14px;
+    font-size:13px;
     width:100%;
     text-align:center;
     -webkit-appearance:none;
     appearance:none;
-    min-height:40px;
+    min-height:38px;
   }
   select.tsel:focus{outline:2px solid var(--mustard);outline-offset:1px;}
-  .tsel-colon{color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
-  .day-result{
+  .tsel-colon{color:var(--text-muted);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+  .entry-result{
     font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
+    font-size:11px;
     color:var(--text-muted);
-    margin-top:6px;
+    flex:1 1 100%;
+    order:5;
   }
-  .day-result b{color:var(--text);}
-  .day-off{color:#5c5346;font-size:11px;font-style:italic;}
+  .entry-result b{color:var(--success);}
   .late-tag{color:var(--ketchup);}
+  .empty-day{color:#5c5346;font-size:12px;font-style:italic;padding:6px 0;}
 
   /* receipt */
   .receipt-wrap{display:flex;justify-content:center;margin-top:36px;}
@@ -247,10 +227,7 @@
   .receipt-row.total{font-weight:700;font-size:15px;margin-top:6px;}
   .receipt-footer{text-align:center;font-size:10px;color:#6b6255;margin-top:14px;letter-spacing:1px;}
 
-  .empty{color:var(--text-muted);font-size:14px;padding:8px 2px;}
   .actions-row{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap;}
-  .note{font-size:12px;color:var(--text-muted);margin-top:8px;line-height:1.5;}
-
   .copy-row{display:flex;justify-content:center;margin-top:16px;}
   #copyBtn{width:100%;max-width:340px;text-align:center;padding:13px 16px;font-size:14px;}
 
@@ -259,11 +236,11 @@
     header{flex-direction:column;align-items:flex-start;gap:4px;}
     h1{font-size:34px;}
     .panel{padding:14px 14px;}
-    .add-row{flex-direction:column;}
-    .add-row button{width:100%;}
-    .days-grid{grid-template-columns:1fr;}
-    .staff-head{flex-wrap:wrap;gap:8px;}
-    .staff-head > div{width:100%;justify-content:space-between;}
+    .day-body{padding:12px 14px;}
+    .entry-row{flex-direction:column;align-items:stretch;}
+    .entry-name{flex:none;width:100%;}
+    .entry-times{flex:none;width:100%;}
+    .entry-remove-row{display:flex;justify-content:flex-end;width:100%;order:6;}
     .actions-row{justify-content:stretch;}
     .actions-row button{flex:1;}
     .receipt{max-width:100%;}
@@ -280,23 +257,16 @@
     </div>
     <div class="sub" id="weekRange"></div>
   </header>
-
   <div id="saveStatus" class="save-status"></div>
 
   <div class="panel">
-    <h2>Staff Roster</h2>
-    <div class="add-row">
-      <input type="text" id="newStaffName" placeholder="Waiter name">
-      <button class="btn-primary" id="addStaffBtn">+ Add Waiter</button>
-    </div>
-    <div class="note">Rate: 1.000 OMR per hour worked, plus 1.000 OMR for each day worked. Overtime pays the same rate — just enter the real clock-in / clock-out time and it's handled automatically.</div>
+    <div class="note">Rate: 1.000 OMR per hour worked, plus 1.000 OMR for each day worked, overtime at the same rate. Shift starts 6:00 PM — up to 30 min late is forgiven, more than that is cut from the pay. Add each waiter under the day they worked, with their clock-in and clock-out time.</div>
   </div>
 
-  <div id="staffList"></div>
-  <div id="emptyState" class="empty" style="display:none;">No waiters added yet. Add one above to start entering hours.</div>
+  <div id="daysList"></div>
 
   <div class="actions-row">
-    <button class="btn-ghost" id="resetWeekBtn">Reset week (keep staff)</button>
+    <button class="btn-ghost" id="resetWeekBtn">Reset week</button>
   </div>
 
   <div class="receipt-wrap">
@@ -315,33 +285,43 @@
     <button class="btn-primary" id="copyBtn">📋 Copy for WhatsApp</button>
   </div>
 
+  <datalist id="namesList"></datalist>
+
 </div>
 
 <script>
 const DAYS = [
-  {key:'Sun', label:'Sun', sched:'6PM–11PM (5h)'},
-  {key:'Mon', label:'Mon', sched:'6PM–11PM (5h)'},
-  {key:'Tue', label:'Tue', sched:'6PM–11PM (5h)'},
-  {key:'Wed', label:'Wed', sched:'6PM–11PM (5h)'},
-  {key:'Thu', label:'Thu', sched:'6PM–1AM (7h)'},
-  {key:'Fri', label:'Fri', sched:'6PM–1AM (7h)'},
-  {key:'Sat', label:'Sat', sched:'6PM–1AM (7h)'},
+  {key:'Sun', label:'Sunday', sched:'6PM–11PM (5h)', staff:'4 staff'},
+  {key:'Mon', label:'Monday', sched:'6PM–11PM (5h)', staff:'4 staff'},
+  {key:'Tue', label:'Tuesday', sched:'6PM–11PM (5h)', staff:'4 staff'},
+  {key:'Wed', label:'Wednesday', sched:'6PM–11PM (5h)', staff:'4 staff'},
+  {key:'Thu', label:'Thursday', sched:'6PM–1AM (7h)', staff:'6 staff'},
+  {key:'Fri', label:'Friday', sched:'6PM–1AM (7h)', staff:'6 staff'},
+  {key:'Sat', label:'Saturday', sched:'6PM–1AM (7h)', staff:'4–5 staff'},
 ];
-const STORAGE_KEY = 'flat-week-data';
+const STORAGE_KEY = 'flat-week-data-v2';
+const SHIFT_START = 18 * 60; // 6:00 PM in minutes
+const GRACE_MINUTES = 30;
+const HOUR_OPTIONS = [16,17,18,19,20,21,22,23,0,1,2,3];
 
-let state = { waiters: [], entries: {} }; // entries[name][dayKey] = {in:'HH:MM', out:'HH:MM'}
+function hourLabel(h24){
+  const period = h24 < 12 ? 'AM' : 'PM';
+  let h12 = h24 % 12;
+  if(h12 === 0) h12 = 12;
+  return `${h12} ${period}`;
+}
 
-function emptyDays(){
+let state = { days: {} }; // days[dayKey] = [ {id, name, in:{h,m}, out:{h,m}}, ... ]
+let nextId = 1;
+
+function emptyDaysState(){
   const d = {};
-  DAYS.forEach(day => d[day.key] = {in:{h:'',m:''}, out:{h:'',m:''}});
+  DAYS.forEach(day => d[day.key] = []);
   return d;
 }
 
-const SHIFT_START = 18 * 60; // 6:00 PM, in minutes
-const GRACE_MINUTES = 30;    // arriving up to 30 min late is not cut
-
-function calcDay(entry){
-  if(!entry || !entry.in || !entry.out) return {hours:0, pay:0, worked:false, cutLate:0};
+function calcEntry(entry){
+  if(!entry) return {hours:0, pay:0, worked:false, cutLate:0};
   const {h:inH, m:inM} = entry.in;
   const {h:outH, m:outM} = entry.out;
   if(inH==='' || inM==='' || outH==='' || outM==='') return {hours:0, pay:0, worked:false, cutLate:0};
@@ -350,9 +330,6 @@ function calcDay(entry){
   if(end <= clockIn) end += 24*60; // crossed midnight
 
   const lateMinutes = clockIn - SHIFT_START;
-  // Arrived on time or early: pay from actual clock-in (full credit for early hours).
-  // Arrived late but within grace (<=30 min): pay from the scheduled 6:00 PM start (not cut).
-  // Arrived more than 30 min late: pay only from actual arrival time (cut).
   let effectiveStart;
   let cutLate = 0;
   if(lateMinutes <= 0){
@@ -365,73 +342,35 @@ function calcDay(entry){
   }
 
   let diffHours = (end - effectiveStart) / 60;
-  // round to nearest half hour
   diffHours = Math.round(diffHours * 2) / 2;
   if(diffHours <= 0) return {hours:0, pay:0, worked:false, cutLate:0};
-  const pay = diffHours * 1 + 1; // 1 OMR/hour + 1 OMR/day worked
-  return {hours:diffHours, pay:pay, worked:true, cutLate: cutLate};
-}
-
-function calcWaiterTotal(name){
-  const days = state.entries[name] || {};
-  let total = 0;
-  DAYS.forEach(d => { total += calcDay(days[d.key]).pay; });
-  return total;
-}
-
-function calcWaiterHours(name){
-  const days = state.entries[name] || {};
-  let hours = 0;
-  DAYS.forEach(d => { hours += calcDay(days[d.key]).hours; });
-  return hours;
-}
-
-function fmtHours(h){
-  // trims trailing .0 e.g. 22h instead of 22.0h, keeps 22.5h
-  return (h % 1 === 0) ? h.toString() : h.toFixed(1);
+  const pay = diffHours * 1 + 1;
+  return {hours:diffHours, pay:pay, worked:true, cutLate:cutLate};
 }
 
 function fmt(n){ return n.toFixed(3); }
+function fmtHours(h){ return (h % 1 === 0) ? h.toString() : h.toFixed(1); }
 
 async function loadState(){
   try{
     const res = await window.storage.get(STORAGE_KEY, false);
     if(res && res.value){
       const parsed = JSON.parse(res.value);
-      state.waiters = parsed.waiters || [];
-      state.entries = parsed.entries || {};
-      migrateEntries();
+      state.days = parsed.days || emptyDaysState();
+      nextId = parsed.nextId || 1;
+    } else {
+      state.days = emptyDaysState();
     }
   }catch(e){
-    // no saved data yet, start fresh
+    state.days = emptyDaysState();
   }
   render();
-}
-
-function migrateEntries(){
-  // convert any old "HH:MM" string entries (from a previous version) into {h,m} objects
-  Object.keys(state.entries).forEach(name => {
-    const days = state.entries[name];
-    DAYS.forEach(d => {
-      const entry = days[d.key];
-      if(!entry){ days[d.key] = {in:{h:'',m:''}, out:{h:'',m:''}}; return; }
-      ['in','out'].forEach(field => {
-        const v = entry[field];
-        if(typeof v === 'string'){
-          const [h,m] = v ? v.split(':') : ['',''];
-          entry[field] = {h: h||'', m: m||''};
-        } else if(!v || typeof v !== 'object'){
-          entry[field] = {h:'', m:''};
-        }
-      });
-    });
-  });
 }
 
 async function saveState(){
   const statusEl = document.getElementById('saveStatus');
   if(statusEl){ statusEl.textContent = 'Saving…'; statusEl.className = 'save-status saving'; }
-  const payload = JSON.stringify(state);
+  const payload = JSON.stringify({days: state.days, nextId: nextId});
   let lastErr = null;
   for(let attempt=1; attempt<=3; attempt++){
     try{
@@ -440,40 +379,39 @@ async function saveState(){
       return;
     }catch(e){
       lastErr = e;
-      await new Promise(r => setTimeout(r, attempt * 500)); // brief backoff before retry
+      await new Promise(r => setTimeout(r, attempt * 500));
     }
   }
   console.error('Could not save after retries', lastErr);
   if(statusEl){ statusEl.textContent = 'Not saved — check connection'; statusEl.className = 'save-status error'; }
 }
 
-function addStaff(name){
-  name = name.trim();
-  if(!name) return;
-  if(state.waiters.includes(name)) return;
-  state.waiters.push(name);
-  state.entries[name] = emptyDays();
+function addEntry(dayKey){
+  state.days[dayKey].push({id: nextId++, name:'', in:{h:'',m:''}, out:{h:'',m:''}});
   saveState();
   render();
 }
 
-function removeStaff(name){
-  state.waiters = state.waiters.filter(w => w !== name);
-  delete state.entries[name];
+function removeEntry(dayKey, id){
+  state.days[dayKey] = state.days[dayKey].filter(e => e.id !== id);
   saveState();
   render();
 }
 
-function updateEntry(name, dayKey, field, part, value){
-  if(!state.entries[name]) state.entries[name] = emptyDays();
-  if(!state.entries[name][dayKey]) state.entries[name][dayKey] = {in:{h:'',m:''}, out:{h:'',m:''}};
-  state.entries[name][dayKey][field][part] = value;
+function updateEntry(dayKey, id, field, part, value){
+  const entry = state.days[dayKey].find(e => e.id === id);
+  if(!entry) return;
+  if(field === 'name'){
+    entry.name = value;
+  } else {
+    entry[field][part] = value;
+  }
   saveState();
   render();
 }
 
 function resetWeek(){
-  state.waiters.forEach(name => state.entries[name] = emptyDays());
+  state.days = emptyDaysState();
   saveState();
   render();
 }
@@ -484,16 +422,7 @@ function setWeekRange(){
   el.textContent = today.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
 }
 
-// Hours realistically covered by a shift: 4 PM through 3 AM (as 24h values)
-const HOUR_OPTIONS = [16,17,18,19,20,21,22,23,0,1,2,3];
-function hourLabel(h24){
-  const period = h24 < 12 ? 'AM' : 'PM';
-  let h12 = h24 % 12;
-  if(h12 === 0) h12 = 12;
-  return `${h12} ${period}`;
-}
-
-function timeSelectGroup(name, dayKey, field, value){
+function timeSelectGroup(dayKey, id, field, value){
   const vh = (value && value.h) || '';
   const vm = (value && value.m) || '';
   let hourOpts = `<option value="">--</option>`;
@@ -508,118 +437,138 @@ function timeSelectGroup(name, dayKey, field, value){
   }
   return `
     <div class="time-select-group">
-      <select class="tsel" data-name="${escapeHtml(name)}" data-day="${dayKey}" data-field="${field}" data-part="h">${hourOpts}</select>
+      <select class="tsel" data-day="${dayKey}" data-id="${id}" data-field="${field}" data-part="h">${hourOpts}</select>
       <span class="tsel-colon">:</span>
-      <select class="tsel" data-name="${escapeHtml(name)}" data-day="${dayKey}" data-field="${field}" data-part="m">${minOpts}</select>
+      <select class="tsel" data-day="${dayKey}" data-id="${id}" data-field="${field}" data-part="m">${minOpts}</select>
     </div>
   `;
 }
 
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function computeTotalsByName(){
+  const totals = {}; // name -> {hours, pay}
+  DAYS.forEach(day => {
+    state.days[day.key].forEach(entry => {
+      const name = (entry.name || '').trim();
+      if(!name) return;
+      const r = calcEntry(entry);
+      if(!totals[name]) totals[name] = {hours:0, pay:0};
+      totals[name].hours += r.hours;
+      totals[name].pay += r.pay;
+    });
+  });
+  return totals;
+}
+
+function allKnownNames(){
+  const set = new Set();
+  DAYS.forEach(day => state.days[day.key].forEach(e => { if(e.name && e.name.trim()) set.add(e.name.trim()); }));
+  return [...set];
+}
+
 function render(){
-  const listEl = document.getElementById('staffList');
-  const emptyEl = document.getElementById('emptyState');
+  const listEl = document.getElementById('daysList');
   listEl.innerHTML = '';
 
-  if(state.waiters.length === 0){
-    emptyEl.style.display = 'block';
-  } else {
-    emptyEl.style.display = 'none';
-  }
-
-  state.waiters.forEach(name => {
+  DAYS.forEach(day => {
     const card = document.createElement('div');
-    card.className = 'staff-card';
+    card.className = 'day-card';
 
+    const entries0 = state.days[day.key] || [];
+    const filledCount = entries0.filter(e => (e.name||'').trim()).length;
     const head = document.createElement('div');
-    head.className = 'staff-head';
-    const total = calcWaiterTotal(name);
-    head.innerHTML = `
-      <span class="staff-name">${escapeHtml(name)}</span>
-      <div style="display:flex;align-items:center;gap:14px;">
-        <span class="staff-total">${fmt(total)} OMR</span>
-        <button class="btn-danger" data-remove="${escapeHtml(name)}">Remove</button>
-      </div>
-    `;
+    head.className = 'day-head';
+    head.innerHTML = `<span class="day-name">${day.label}</span><span class="day-sched">${day.sched} · needs ${day.staff} · ${filledCount} added</span>`;
     card.appendChild(head);
 
-    const grid = document.createElement('div');
-    grid.className = 'days-grid';
+    const body = document.createElement('div');
+    body.className = 'day-body';
 
-    DAYS.forEach(day => {
-      const entry = (state.entries[name] && state.entries[name][day.key]) || {in:'',out:''};
-      const result = calcDay(entry);
-      const cell = document.createElement('div');
-      cell.className = 'day-cell';
-      cell.innerHTML = `
-        <div class="day-label"><span>${day.label}</span><span class="day-sched">${day.sched}</span></div>
-        <div class="time-row">
+    const entries = state.days[day.key] || [];
+    if(entries.length === 0){
+      body.innerHTML += `<div class="empty-day">No one added for ${day.label} yet.</div>`;
+    }
+
+    entries.forEach(entry => {
+      const result = calcEntry(entry);
+      const row = document.createElement('div');
+      row.className = 'entry-row';
+      row.innerHTML = `
+        <input type="text" class="entry-name" list="namesList" placeholder="Waiter name" value="${escapeHtml(entry.name)}" data-day="${day.key}" data-id="${entry.id}">
+        <div class="entry-times">
           <span class="time-io-label">In</span>
-          ${timeSelectGroup(name, day.key, 'in', entry.in)}
-        </div>
-        <div class="time-row">
+          ${timeSelectGroup(day.key, entry.id, 'in', entry.in)}
           <span class="time-io-label">Out</span>
-          ${timeSelectGroup(name, day.key, 'out', entry.out)}
+          ${timeSelectGroup(day.key, entry.id, 'out', entry.out)}
         </div>
-        <div class="day-result">
-          ${result.worked ? `<b>${result.hours}h</b> → ${fmt(result.pay)} OMR${result.cutLate ? ` <span class="late-tag">· ${result.cutLate}m late, cut</span>` : ''}` : '<span class="day-off">Off</span>'}
+        <div class="entry-result">
+          ${result.worked ? `<b>${result.hours}h → ${fmt(result.pay)} OMR</b>${result.cutLate ? ` <span class="late-tag">· ${result.cutLate}m late, cut</span>` : ''}` : '<span style="opacity:.5;">enter both times</span>'}
+        </div>
+        <div class="entry-remove-row">
+          <button class="btn-danger" data-remove-day="${day.key}" data-remove-id="${entry.id}">✕</button>
         </div>
       `;
-      grid.appendChild(cell);
+      body.appendChild(row);
     });
 
-    card.appendChild(grid);
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn-add';
+    addBtn.textContent = '+ Add person to ' + day.label;
+    addBtn.addEventListener('click', () => addEntry(day.key));
+    body.appendChild(addBtn);
+
+    card.appendChild(body);
     listEl.appendChild(card);
   });
 
+  // datalist for name autocomplete
+  const namesListEl = document.getElementById('namesList');
+  namesListEl.innerHTML = allKnownNames().map(n => `<option value="${escapeHtml(n)}">`).join('');
+
   // receipt
+  const totals = computeTotalsByName();
+  const names = Object.keys(totals);
   const receiptLines = document.getElementById('receiptLines');
   receiptLines.innerHTML = '';
-  let grand = 0;
-  let grandHours = 0;
-  state.waiters.forEach(name => {
-    const total = calcWaiterTotal(name);
-    const hours = calcWaiterHours(name);
-    grand += total;
-    grandHours += hours;
+  let grand = 0, grandHours = 0;
+  names.forEach(name => {
+    const t = totals[name];
+    grand += t.pay;
+    grandHours += t.hours;
     const row = document.createElement('div');
     row.className = 'receipt-row';
-    row.innerHTML = `<span>${escapeHtml(name)}</span><span>${fmtHours(hours)}h · ${fmt(total)}</span>`;
+    row.innerHTML = `<span>${escapeHtml(name)}</span><span>${fmtHours(t.hours)}h · ${fmt(t.pay)}</span>`;
     receiptLines.appendChild(row);
   });
-  if(state.waiters.length === 0){
+  if(names.length === 0){
     receiptLines.innerHTML = '<div class="receipt-row"><span>—</span><span>0.000</span></div>';
   }
   document.getElementById('receiptGrandTotal').textContent = `${fmtHours(grandHours)}h · ${fmt(grand)}`;
 
-  // wire up events
-  document.querySelectorAll('select.tsel').forEach(sel => {
-    sel.addEventListener('change', e => {
-      const {name, day, field, part} = e.target.dataset;
-      updateEntry(name, day, field, part, e.target.value);
+  // wire events
+  document.querySelectorAll('.entry-name').forEach(inp => {
+    inp.addEventListener('change', e => {
+      updateEntry(e.target.dataset.day, Number(e.target.dataset.id), 'name', null, e.target.value);
     });
   });
-  document.querySelectorAll('[data-remove]').forEach(btn => {
-    btn.addEventListener('click', e => removeStaff(e.target.dataset.remove));
+  document.querySelectorAll('select.tsel').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const {day, id, field, part} = e.target.dataset;
+      updateEntry(day, Number(id), field, part, e.target.value);
+    });
+  });
+  document.querySelectorAll('[data-remove-id]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      removeEntry(e.target.dataset.removeDay, Number(e.target.dataset.removeId));
+    });
   });
 }
 
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-document.getElementById('addStaffBtn').addEventListener('click', () => {
-  const input = document.getElementById('newStaffName');
-  addStaff(input.value);
-  input.value = '';
-});
-document.getElementById('newStaffName').addEventListener('keydown', e => {
-  if(e.key === 'Enter'){
-    addStaff(e.target.value);
-    e.target.value = '';
-  }
-});
 function buildWhatsAppText(){
   const today = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
   let lines = [];
@@ -627,23 +576,24 @@ function buildWhatsAppText(){
   lines.push(today);
   lines.push('');
 
+  const totals = computeTotalsByName();
+  const names = Object.keys(totals);
   let grand = 0, grandHours = 0;
 
-  state.waiters.forEach(name => {
-    const days = state.entries[name] || {};
+  names.forEach(name => {
     let dayParts = [];
-    DAYS.forEach(d => {
-      const r = calcDay(days[d.key]);
-      dayParts.push(r.worked ? `${d.label} ${fmtHours(r.hours)}h` : `${d.label} off`);
+    DAYS.forEach(day => {
+      const entry = state.days[day.key].find(e => (e.name||'').trim() === name);
+      const r = entry ? calcEntry(entry) : {worked:false};
+      if(r.worked) dayParts.push(`${day.key} ${fmtHours(r.hours)}h`);
     });
-    const total = calcWaiterTotal(name);
-    const hours = calcWaiterHours(name);
-    grand += total;
-    grandHours += hours;
+    const t = totals[name];
+    grand += t.pay;
+    grandHours += t.hours;
 
     lines.push(`*${name}*`);
     lines.push(dayParts.join('  '));
-    lines.push(`Total: ${fmtHours(hours)}h → ${fmt(total)} OMR`);
+    lines.push(`Total: ${fmtHours(t.hours)}h → ${fmt(t.pay)} OMR`);
     lines.push('');
   });
 
@@ -662,7 +612,6 @@ async function copyForWhatsApp(){
     btn.textContent = '✅ Copied!';
     setTimeout(() => btn.textContent = original, 1800);
   }catch(e){
-    // fallback for older mobile browsers
     const ta = document.createElement('textarea');
     ta.value = text;
     ta.style.position = 'fixed';
@@ -683,9 +632,8 @@ async function copyForWhatsApp(){
 }
 
 document.getElementById('copyBtn').addEventListener('click', copyForWhatsApp);
-
 document.getElementById('resetWeekBtn').addEventListener('click', () => {
-  if(confirm('Clear all entered hours for this week? Staff names will stay.')){
+  if(confirm('Clear everyone entered this week for all days?')){
     resetWeek();
   }
 });
